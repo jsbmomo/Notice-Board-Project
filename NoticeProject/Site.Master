@@ -1,0 +1,36 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="NoticeProject.SiteMaster" %>
+
+<!DOCTYPE html>
+
+<script runat="server">
+
+
+</script>
+
+
+
+<html lang="ko">
+<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> - 내 ASP.NET 애플리케이션</title>
+
+</head>
+
+<body>
+    <form runat="server">
+        
+        <div class="container body-content">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+
+
+            <footer>
+                <p >&copy; <%: DateTime.Now.Year %> - 내 ASP.NET 애플리케이션</p>
+            </footer>
+        </div>
+
+    </form>
+</body>
+</html>
