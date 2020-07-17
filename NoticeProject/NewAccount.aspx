@@ -3,10 +3,6 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server" >
 
     <script type="text/javascript">
-        function Customer_ServerValidate() {
-            if (PhoneNumber1.length < 4)
-                
-        }
 
     </script>
          
@@ -24,9 +20,9 @@
                 <asp:Button ID="compareID" runat="server" Text="중복확인" OnClick="compareID_Click"/>
                 </td>
             <tr><td><td>
-                <asp:RequiredFieldValidator ID="RequireValidator1" runat="server" 
+                <asp:RegularExpressionValidator ID="ID_Check_valid" runat="server" 
                     ControlToValidate="LoginID" 
-                    ValidationExpression="(?!^[0-9]*$)(?!^[a-zA-Z]*$)^(.{8,15})$"
+                    ValidationExpression="(?!^[0-9]*$)(?!^[a-zA-Z]*$)^(.{4,15})$"
                     Display="Dynamic"
                     ForeColor="Red" Font-Size="Small"
                     ValidationGroup="vali"
@@ -35,14 +31,16 @@
             
             <tr>
             <td align=right> 비밀번호 : </td>
-            <td><asp:TextBox ID="LoginPW" runat="server" MaxLength="30" TextMode="Password" /></td></tr>
+            <td>
+                <asp:TextBox ID="LoginPW" runat="server" MaxLength="30" TextMode="Password" />
+                </td></tr>
             <tr><td><td>
                 <asp:RegularExpressionValidator ID="RegularExpress1" runat="server"
                     ControlToValidate="LoginPW" 
-                    ValidationExpression="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{4,30}$"
+                    ValidationExpression="^(?=.*[a-z])(?=.*[0-9]).{4,30}$"
                     ForeColor="Red" Font-Size="Small"
                     ValidationGroup="vali"
-                    ErrorMessage="비밀번호는 4~30자리입니다(특수문자 포함)."
+                    ErrorMessage="비밀번호는 4~30자리입니다."
                     Display="Dynamic" />
                 </td></tr>
 
@@ -74,7 +72,7 @@
             <tr>
             <td align="right"> 생년월일 : </td>
             <td><asp:DropDownList ID="birthYear" runat="server" 
-                    AutoPostBack="true" OnSelectedIndexChanged="birthYear_SelectedIndexChanged"/>년
+                    OnSelectedIndexChanged="birthYear_SelectedIndexChanged"/>년
                 <asp:DropDownList ID="birthMonth" runat="server" 
                     AutoPostBack="true" OnSelectedIndexChanged="birthMonth_SelectedIndexChanged"/>월
                 <asp:DropDownList ID="birthDay" runat="server" 
@@ -99,10 +97,10 @@
             <tr><td><td>
                 <asp:RequiredFieldValidator ID="RequireValidator3" runat="server"
                     ControlToValidate="eMail"
-                    Display="Dynamic"
                     ForeColor="Red" Font-Size="Small"
                     ValidationGroup="vali"
-                    ErrorMessage="이메일은 필수 입력사항 입니다." />
+                    ErrorMessage="이메일은 필수 입력사항 입니다." 
+                    Display="Dynamic"/>
                 </td></tr>
             <tr>
             <td align=right> 전화번호 : </td>
@@ -110,25 +108,25 @@
                     <asp:ListItem>010</asp:ListItem>
                     <asp:ListItem>011</asp:ListItem>
                 </asp:DropDownList> -
-                <asp:TextBox ID="PhoneNumber1" runat="server" Text="" MaxLength="4" Width="40"/> - 
-                <asp:TextBox ID="PhoneNumber2" runat="server" Text="" MaxLength="4" Width="40"/>
+                <asp:TextBox ID="PhoneNumber" runat="server" Text="" MaxLength="9" Width="100"/>
             </td></tr>
             <tr><td><td>
-                <!-- 전화번호는 js로 처리 -->
-                <asp:CustomValidator 
-                    ID="RequireValidator4" runat="server"
-                    Display="Dynamic"
+                <asp:RegularExpressionValidator ID="phoneNumberCheck" runat="server"
+                    ControlToValidate="PhoneNumber"
+                    ValidationExpression="\d{4}-\d{4}"
                     ForeColor="Red" Font-Size="Small"
                     ValidationGroup="vali"
-                    OnServerValidate="Customer_ServerValidate"
-                    ErrorMessage="전화번호는 필수 입력사항 입니다." />
+                    ErrorMessage="중간에 '-'를 넣고 번호를 모두 입력해주세요."
+                    Display="Dynamic" />
                 </td></tr>
         </table>
+
         <p>
             <asp:Button ID="backToMain" runat="server" Text="메뉴 화면" OnClick="backToMain_Click"/>
             <asp:Button ID="createAccount" runat="server" Text="계정 생성" 
                 ValidationGroup="vali" OnClick ="createAccount_Click" />
         </p>
+
     </div><br />
     <hr style="width:50%;"/>
     </center>

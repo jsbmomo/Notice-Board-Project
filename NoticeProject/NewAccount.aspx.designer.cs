@@ -42,13 +42,13 @@ namespace NoticeProject
         protected global::System.Web.UI.WebControls.Button compareID;
 
         /// <summary>
-        /// RequireValidator1 컨트롤입니다.
+        /// ID_Check_valid 컨트롤입니다.
         /// </summary>
         /// <remarks>
         /// 자동 생성 필드입니다.
         /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequireValidator1;
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator ID_Check_valid;
 
         /// <summary>
         /// LoginPW 컨트롤입니다.
@@ -168,31 +168,22 @@ namespace NoticeProject
         protected global::System.Web.UI.WebControls.DropDownList FrontNumber;
 
         /// <summary>
-        /// PhoneNumber1 컨트롤입니다.
+        /// PhoneNumber 컨트롤입니다.
         /// </summary>
         /// <remarks>
         /// 자동 생성 필드입니다.
         /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox PhoneNumber1;
+        protected global::System.Web.UI.WebControls.TextBox PhoneNumber;
 
         /// <summary>
-        /// PhoneNumber2 컨트롤입니다.
+        /// phoneNumberCheck 컨트롤입니다.
         /// </summary>
         /// <remarks>
         /// 자동 생성 필드입니다.
         /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox PhoneNumber2;
-
-        /// <summary>
-        /// RequireValidator4 컨트롤입니다.
-        /// </summary>
-        /// <remarks>
-        /// 자동 생성 필드입니다.
-        /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CustomValidator RequireValidator4;
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator phoneNumberCheck;
 
         /// <summary>
         /// backToMain 컨트롤입니다.

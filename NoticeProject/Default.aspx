@@ -19,13 +19,20 @@
         protected void MovePage_Click(object sender, EventArgs e) // 로그인 성공 시 페이지 넘김
         {
             if (LoginCheck(LoginID.Text, LoginPW.Text) > 0)
+            {
+                Session["LoginUsers"] = LoginID.Text;
+                
                 Response.Redirect("~/NoticePage.aspx");
+
+            }
+            
             else
                 Label1.Text = "아이디 또는 비밀번호를 확인해주세요.";
         }
 
         protected void CreateAccount_Click(object sender, EventArgs e)
         {
+
             Response.Redirect("~/NewAccount.aspx");
         }
 
@@ -46,20 +53,31 @@
         }
     </script>
 
-    <div class="row">
-        <div class="col-md-4">
-            <h2>Getting started</h2> <br />
-            <hr width="800"/> <br />
+    <center>
+        <div class="row">
+            <div class="col-md-4">
 
-            로그인   <asp:TextBox ID="LoginID" runat="server" /> <br />
-            비밀번호 <asp:TextBox ID="LoginPW" runat="server" TextMode="Password" /> <br />
-            <asp:Label ID="Label1" runat="server" Text="" ForeColor="Red" Font-Size="Small"/> <br />
+                <h2>Getting started</h2> <br />
+                <hr width="800"/><br />
+                <table>
+                    <tr>
+                    <td>로그인 </td>
+                    <td><asp:TextBox ID="LoginID" runat="server" /> 
+                        </td></tr>
+                    <tr>    
+                    <td>비밀번호 </td>
+                    <td><asp:TextBox ID="LoginPW" runat="server" TextMode="Password" /> 
+                        </td></tr>
+                
+                </table>
+                <asp:Label ID="Label1" runat="server" Text="" ForeColor="Red" Font-Size="Small"/> <br />
+                <asp:Button ID="CreateAccount" runat="server" Text="회원가입" OnClick="CreateAccount_Click" /> 
+                <asp:Button ID="MovePage" runat="server" Text="로그인" OnClick="MovePage_Click" /> <br /><br />
 
-            <hr width="800"/> <br />
-            <asp:Button ID="CreateAccount" runat="server" Text="회원가입" OnClick="CreateAccount_Click" /> 
-            <asp:Button ID="MovePage" runat="server" Text="로그인" OnClick="MovePage_Click" /> <br />
-            
+                <hr width="800"/> <br />
+               
+            </div>
         </div>
-    </div>
+    </center>
 
 </asp:Content>
