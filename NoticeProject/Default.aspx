@@ -23,7 +23,6 @@
                 Session["LoginUsers"] = LoginID.Text;
                 
                 Response.Redirect("~/NoticePage.aspx");
-
             }
             
             else
