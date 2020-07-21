@@ -14,7 +14,7 @@
 
         <asp:TableRow>
             <asp:TableCell HorizontalAlign="Right">
-                작성이 : 
+                작성자 : 
             </asp:TableCell>
             <asp:TableCell>
                 <asp:Label ID="Written" runat="server" Text="" />

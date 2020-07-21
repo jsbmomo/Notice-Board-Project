@@ -73,7 +73,7 @@
             <td align="right"> 생년월일 : </td>
             <td><asp:DropDownList ID="birthYear" runat="server" 
                     OnSelectedIndexChanged="birthYear_SelectedIndexChanged"/>년
-                <asp:DropDownList ID="birthMonth" runat="server" 
+                <asp:DropDownList ID="birthMonth" runat="server"
                     AutoPostBack="true" OnSelectedIndexChanged="birthMonth_SelectedIndexChanged"/>월
                 <asp:DropDownList ID="birthDay" runat="server" 
                     AutoPostBack="true" OnSelectedIndexChanged="birthDay_SelectedIndexChanged" />일

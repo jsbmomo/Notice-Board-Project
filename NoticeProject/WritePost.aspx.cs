@@ -12,8 +12,7 @@ namespace NoticeProject
 {
     public partial class WritePost : System.Web.UI.Page
     {
-        private string updateContents_userID { get; set; } // Post로 게시물을 수정하고자 하는 사용자 ID를 받음
-        private string updateContents_index { get; set; } // Post로 수정될 게시물의 인덱스를 받음 
+        string updateContents_index = "";// Post로 수정될 게시물의 인덱스를 받음 
 
         private string sqlCon = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
         protected void Page_Load(object sender, EventArgs e)
@@ -26,37 +25,81 @@ namespace NoticeProject
             //updateContents_index = context.Items["index"].ToString();
             //updateContents_userID = context.Items["Id"].ToString();
 
-            string board_id = Request.QueryString["board_id"].ToString();
-
-            if (string.IsNullOrEmpty(board_id))
+            string board_id;
+            try
             {
-                SqlConnection con = new SqlConnection(sqlCon);
-                string sql = "SELECT header, input_info FROM Board WHERE number=@Index and user_id=@User_ID";
-                //input_info=@NewContents header=@NewHeader 
-                // @Index @User_ID"
-
-                try
-                {
-                    SqlCommand cmd = new SqlCommand(sql, con);
-                    cmd.Parameters.AddWithValue("@Index", board_id);
-                    cmd.Parameters.AddWithValue("@User_ID", Written.Text);
-
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    con.Close();
-                } 
-                catch(Exception ex)
-                {
-                    Response.Write(ex.Message);
-                }
+                board_id = Request.QueryString["board_id"].ToString(); // get으로 메인화면에서 게시물의 주소를 가져옴 
+            }
+            catch(Exception ex)
+            {
+                board_id = "";
             }
 
+            // !IsPostBack를 하지 않을 경우, 버튼을 누르는 등 이벤트가 발생될 때마다
+            // DB에서 새롭게 데이터를 불러오게 되어, 수정한 데이터를 저장하는 것이 아니라
+            // 기존의 데이터를 다시 저장하는 과정을 거치게 된다.
+            if (!IsPostBack)
+            {
+                if (!string.IsNullOrEmpty(board_id))
+                {
+                    CreateBoardBtn.Visible = false;
+                    UpdateContentsBtn.Visible = true;
+
+                    SqlConnection con = new SqlConnection(sqlCon);
+                    string sql = "SELECT header, input_info FROM Board WHERE number=@Index and user_id=@User_ID";
+
+                    updateContents_index = board_id;
+
+                    try
+                    {
+                        con.Open();
+
+                        SqlCommand cmd = new SqlCommand(sql, con);
+                        cmd.Parameters.AddWithValue("@Index", board_id);
+                        cmd.Parameters.AddWithValue("@User_ID", Written.Text);
+
+                        SqlDataReader reader = cmd.ExecuteReader();
+
+                        string header = ""; // DB에서 header의 내용을 저장
+                        string contents = ""; // DB에서 input_info의 내용을 저장
+                        while (reader.Read())
+                        {
+                            header = reader["header"] as string; // 가져온 데이터에서 "header"부분만 따로 저장 
+                            contents = reader["input_info"] as string; // 가져온 데이터에서 "input_info" 부분만 따로 저장 
+                        }
+                        WriteHeader.Text = header;
+                        WriteContents.Text = contents;
+
+                        reader.Close();
+                        con.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Response.Write(ex.Message);
+                    }
+                }
+                else
+                {
+                    CreateBoardBtn.Visible = true;
+                    UpdateContentsBtn.Visible = false;
+                }
+            }
         }
 
         protected void CancelBtn_Click(object sender, EventArgs e)
         {
+            string nowPage = Request.QueryString["nowPage"].ToString();
+           
+            //"?nowPage=Contents"
+            if(nowPage == "Contents")
+            {
+                Response.Redirect("~/Contact.aspx?board_id=" + updateContents_index);
+            }
+            else
+            {
+                Response.Redirect("~/NoticePage.aspx");
+            }
             //Response.Redirect(Request.QueryString["~/NoticePage.aspx"]);
-            Response.Redirect("~/NoticePage.aspx");
         }
 
 
@@ -75,6 +118,10 @@ namespace NoticeProject
             con.Open();
             cmd.ExecuteNonQuery();
             con.Close();
+
+            ClientScript.RegisterStartupScript(typeof(Page), "alert",
+                "<script> alert('게시물이 작성되었습니다.'); location.href='NoticePage.aspx'; </script>");
+
         }
 
 
@@ -89,10 +136,13 @@ namespace NoticeProject
             {
                 SqlCommand cmd = new SqlCommand(sql, con);
 
-                cmd.Parameters.AddWithValue("@NewContents", WriteContents.Text);
-                cmd.Parameters.AddWithValue("@NewHeader", WriteHeader.Text);
+                string header = WriteHeader.Text;
+                string contents = WriteContents.Text;
+
+                cmd.Parameters.AddWithValue("@NewContents", header);
+                cmd.Parameters.AddWithValue("@NewHeader", contents);
                 cmd.Parameters.AddWithValue("@Index", updateContents_index);
-                cmd.Parameters.AddWithValue("@User_ID", updateContents_userID);
+                cmd.Parameters.AddWithValue("@User_ID", Written.Text);
 
                 con.Open();
                 cmd.ExecuteNonQuery();

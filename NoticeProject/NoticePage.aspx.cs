@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -19,6 +20,7 @@ namespace NoticeProject
 
             loginUser = Session["LoginUsers"].ToString();
             Login_UserID_lbl.Text = loginUser + "님, 환영합니다.";
+          
         }
 
         protected void movepage_Click(object sender, EventArgs e)
@@ -33,7 +35,7 @@ namespace NoticeProject
 
         protected void NewNotice_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/WritePost.aspx");
+            Response.Redirect("~/WritePost.aspx?board_id=");
         }
 
         // 게시물 삭제 버튼을 클릭했을 경우.
@@ -41,7 +43,7 @@ namespace NoticeProject
         {
             Button btn = (Button)sender; // 
             GridViewRow row = (GridViewRow)btn.NamingContainer; // 
-            string written_id = row.Cells[1].Text; // 버튼이 위치한 열에서 ID(string)를 가져옴
+            string written_id = row.Cells[2].Text; // 버튼이 위치한 열에서 ID(string)를 가져옴
 
             if(written_id == Session["LoginUsers"].ToString())
             {
@@ -77,7 +79,7 @@ namespace NoticeProject
             {
                 //권한이 없습니다. (알림창)
                 ClientScript.RegisterStartupScript(typeof(Page), "alert",
-                    "<script>alert('권한이 없습니다.') </script>");
+                    "<script>alert('해당 게시물을 삭제할 권한이 없습니다.') </script>");
             }
             
         }
@@ -88,22 +90,33 @@ namespace NoticeProject
         {
             Button btn = (Button)sender;
             GridViewRow row = (GridViewRow)btn.NamingContainer;
-            string written_id = row.Cells[1].Text; // grid view에 작성된 ID를 가져옴 
+            string written_id = row.Cells[2].Text; // grid view에 작성된 ID를 가져옴 
 
             if (written_id == Session["LoginUsers"].ToString())
             {
                 string index = row.Cells[0].Text;
                 int board_index = int.Parse(index);
 
-                //// 수정할 게시물에 대한 데이터를 보냄(ID, INDEX)
+                //// 수정할 게시물에 대한 데이터를 보냄(ID, INDEX) <=  Post 방식(하지만 에러발생)
                 //HttpContext context = HttpContext.Current;
                 //context.Items.Add("index", board_index);
                 //context.Items.Add("Id", written_id);
 
                 //Server.Transfer("~/WritePost.aspx", true);
 
-                Response.Redirect("~/WritePost.aspx?board_id=" + board_index);
+                Response.Redirect("~/WritePost.aspx?board_id=" + board_index +"&nowPage=Board");
             }
+            else
+            {
+                //권한이 없습니다. (알림창)
+                ClientScript.RegisterStartupScript(typeof(Page), "alert",
+                    "<script>alert('해당 게시물을 수정할 권한이 없습니다.') </script>");
+            }
+        }
+
+        protected void NoticeGrid_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

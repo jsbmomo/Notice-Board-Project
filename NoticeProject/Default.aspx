@@ -57,7 +57,7 @@
             <div class="col-md-4">
 
                 <h2>Getting started</h2> <br />
-                <hr width="800"/><br />
+                <hr style="width:800px"/><br />
                 <table>
                     <tr>
                     <td>로그인 </td>
@@ -73,7 +73,7 @@
                 <asp:Button ID="CreateAccount" runat="server" Text="회원가입" OnClick="CreateAccount_Click" /> 
                 <asp:Button ID="MovePage" runat="server" Text="로그인" OnClick="MovePage_Click" /> <br /><br />
 
-                <hr width="800"/> <br />
+                <hr style="width:800px"/> <br />
                
             </div>
         </div>
