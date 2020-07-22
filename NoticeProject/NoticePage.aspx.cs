@@ -13,6 +13,7 @@ namespace NoticeProject
 {
     public partial class LoginPage : System.Web.UI.Page
     {
+        private string sqlCon = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -20,7 +21,6 @@ namespace NoticeProject
 
             loginUser = Session["LoginUsers"].ToString();
             Login_UserID_lbl.Text = loginUser + "님, 환영합니다.";
-          
         }
 
         protected void movepage_Click(object sender, EventArgs e)
@@ -52,7 +52,6 @@ namespace NoticeProject
 
                 try
                 {
-                    string sqlCon = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
                     //Response.Write($"{written_id} == {Session["LoginUsers"].ToString()} ID가 일치함을 확인!");
                     SqlConnection con = new SqlConnection(sqlCon);
                     string sql = "DELETE FROM dbo.Board WHERE user_id=@UserID AND number=@Number";
@@ -116,7 +115,52 @@ namespace NoticeProject
 
         protected void NoticeGrid_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            
         }
+
+
+
+
+        /* 게시판 정렬 기능 추가시 디자인 페이지에서 "정렬 기능 사용"에 체크해 줌으로
+         * 간단하게 사용가능하다. 하지만 해당 기능을 직접 생성하고 싶다면 아래의 소스 코드를 
+         * 사용한다.
+        // GridView의 정렬을 수행(GridView의 OnSorting에 선언한 메소드)
+        protected void NoticeGrid_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            DataTable dataTable = (DataTable)ViewState["dirState"];
+            if(dataTable.Rows.Count > 0)
+            {
+                if(Convert.ToString(ViewState["sortdr"]) == "Asc")
+                {
+                    dataTable.DefaultView.Sort = e.SortExpression + " Desc";
+                    ViewState["sortdr"] = "Desc";
+                }
+                else
+                {
+                    dataTable.DefaultView.Sort = e.SortExpression + "Asc";
+                    ViewState["sortdr"] = "Asc";
+                }
+                NoticeGrid.DataSource = dataTable;
+                NoticeGrid.DataBind();
+            }
+        }
+
+        // Grid 데이터를 가져오는 메소드 
+        public void GridViewSortDESC()
+        {
+            SqlConnection con = new SqlConnection(sqlCon);
+            string sql = "SELECT number, user_id, header, input_date FROM dbo.Board";
+            SqlCommand cmd = new SqlCommand(sql, con);
+
+            SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            sqlDataAdapter.Fill(dt);
+
+            NoticeGrid.DataSource = dt;
+            NoticeGrid.DataBind();
+            ViewState["dirState"] = dt;
+            ViewState["Sortdr"] = "Asc";
+        }*/
+
     }
 }

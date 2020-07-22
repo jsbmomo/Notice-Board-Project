@@ -19,15 +19,16 @@
     <asp:GridView ID="NoticeGrid" runat="server" 
         DataSourceID="SqlDataSource"
         emptydatatext="No data avilable"
-        allowpaging="True"
+        AllowPaging="True"
+        AllowSorting="True"
         AutoGenerateColumns="False"
         DataKeyNames="number" width="60%" 
-        ForeColor="#333333" GridLines="None" AllowSorting="True" OnSelectedIndexChanged="NoticeGrid_SelectedIndexChanged">
+        ForeColor="#333333" GridLines="None" 
+        OnSelectedIndexChanged="NoticeGrid_SelectedIndexChanged">
 
         <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
 
         <Columns>
-
             <asp:BoundField DataField="number" 
                 ItemStyle-Width="9%"
                 HeaderText="ID" 
@@ -37,8 +38,8 @@
             
             <asp:HyperLinkField DataTextField="header" 
                 ItemStyle-Width="28%"
-                DataNavigateUrlFields="number"
-                DataNavigateUrlFormatString="~/Contact.aspx?board_id={0}"
+                DataNavigateUrlFields="number, user_id"
+                DataNavigateUrlFormatString="~/Contact.aspx?board_id={0}&user={1}"
                 target="_self"
                 HeaderText="Header" 
                 ControlStyle-ForeColor="Blue"
@@ -90,11 +91,11 @@
         <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
     </asp:GridView>
 
-
+    
     <asp:SqlDataSource ID="SqlDataSource" runat="server" 
         ConnectionString="<%$ ConnectionStrings:DBConnectionString %>"
-        SelectCommand="SELECT number, user_id, header, input_date FROM dbo.Board">
-    </asp:SqlDataSource>
+        SelectCommand="SELECT number, user_id, header, input_date FROM dbo.Board ORDER BY number DESC">
+    </asp:SqlDataSource> 
     
     <hr style="width:63%;" />
     <asp:Panel ID="Panel1" runat="server" Width="60%" Height="50px" HorizontalAlign="Right">

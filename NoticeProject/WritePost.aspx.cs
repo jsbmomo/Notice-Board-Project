@@ -12,7 +12,7 @@ namespace NoticeProject
 {
     public partial class WritePost : System.Web.UI.Page
     {
-        string updateContents_index = "";// Post로 수정될 게시물의 인덱스를 받음 
+        private static string updateContents_index = "";// Post로 수정될 게시물의 인덱스를 받음 
 
         private string sqlCon = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
         protected void Page_Load(object sender, EventArgs e)
@@ -136,11 +136,8 @@ namespace NoticeProject
             {
                 SqlCommand cmd = new SqlCommand(sql, con);
 
-                string header = WriteHeader.Text;
-                string contents = WriteContents.Text;
-
-                cmd.Parameters.AddWithValue("@NewContents", header);
-                cmd.Parameters.AddWithValue("@NewHeader", contents);
+                cmd.Parameters.AddWithValue("@NewContents", WriteContents.Text);
+                cmd.Parameters.AddWithValue("@NewHeader", WriteHeader.Text);
                 cmd.Parameters.AddWithValue("@Index", updateContents_index);
                 cmd.Parameters.AddWithValue("@User_ID", Written.Text);
 
