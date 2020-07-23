@@ -15,13 +15,22 @@ namespace NoticeProject
     {
 
         /// <summary>
-        /// Panel1 컨트롤입니다.
+        /// HeaderPanel 컨트롤입니다.
         /// </summary>
         /// <remarks>
         /// 자동 생성 필드입니다.
         /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel Panel1;
+        protected global::System.Web.UI.WebControls.Panel HeaderPanel;
+
+        /// <summary>
+        /// BoardIndexText 컨트롤입니다.
+        /// </summary>
+        /// <remarks>
+        /// 자동 생성 필드입니다.
+        /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label BoardIndexText;
 
         /// <summary>
         /// BoardIndex 컨트롤입니다.
@@ -42,13 +51,13 @@ namespace NoticeProject
         protected global::System.Web.UI.WebControls.Label headerlbl;
 
         /// <summary>
-        /// Panel2 컨트롤입니다.
+        /// ButtonPanel 컨트롤입니다.
         /// </summary>
         /// <remarks>
         /// 자동 생성 필드입니다.
         /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel Panel2;
+        protected global::System.Web.UI.WebControls.Panel ButtonPanel;
 
         /// <summary>
         /// Written 컨트롤입니다.
@@ -78,13 +87,13 @@ namespace NoticeProject
         protected global::System.Web.UI.WebControls.Button UpdateBtn;
 
         /// <summary>
-        /// Panel3 컨트롤입니다.
+        /// ContantsPanel 컨트롤입니다.
         /// </summary>
         /// <remarks>
         /// 자동 생성 필드입니다.
         /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel Panel3;
+        protected global::System.Web.UI.WebControls.Panel ContantsPanel;
 
         /// <summary>
         /// Literal 컨트롤입니다.
@@ -168,31 +177,40 @@ namespace NoticeProject
         protected global::System.Web.UI.WebControls.Button CommentStore;
 
         /// <summary>
-        /// Panel6 컨트롤입니다.
+        /// CommentCount_Panel 컨트롤입니다.
         /// </summary>
         /// <remarks>
         /// 자동 생성 필드입니다.
         /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel Panel6;
+        protected global::System.Web.UI.WebControls.Panel CommentCount_Panel;
 
         /// <summary>
-        /// CommentCount 컨트롤입니다.
+        /// CommentCount_lbl 컨트롤입니다.
         /// </summary>
         /// <remarks>
         /// 자동 생성 필드입니다.
         /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label CommentCount;
+        protected global::System.Web.UI.WebControls.Label CommentCount_lbl;
 
         /// <summary>
-        /// CommentList 컨트롤입니다.
+        /// CommentViewPanel 컨트롤입니다.
         /// </summary>
         /// <remarks>
         /// 자동 생성 필드입니다.
         /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView CommentList;
+        protected global::System.Web.UI.WebControls.Panel CommentViewPanel;
+
+        /// <summary>
+        /// CommentGridView 컨트롤입니다.
+        /// </summary>
+        /// <remarks>
+        /// 자동 생성 필드입니다.
+        /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView CommentGridView;
 
         /// <summary>
         /// SqlDataSource 컨트롤입니다.

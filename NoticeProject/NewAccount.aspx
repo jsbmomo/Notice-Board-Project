@@ -15,6 +15,30 @@
         <asp:Label ID="testlbl" runat="server" Text="" />
         <table>
             <tr>
+            <td align=right> 이름 : </td>
+            <td><asp:TextBox ID="userName" runat="server" Text="" /></td></tr>
+            <tr><td><td>
+                <asp:RequiredFieldValidator ID="RequireValidator2" runat="server"
+                    ControlToValidate="userName"
+                    Display="Dynamic"
+                    ForeColor="Red" Font-Size="Small"
+                    ValidationGroup="vali"
+                    ErrorMessage="이름은 반드시 입력해야합니다." />
+                </td></tr>
+
+            <tr>
+            <td align="right"> 생년월일 : </td>
+            <td><asp:DropDownList ID="birthYear" runat="server" 
+                    OnSelectedIndexChanged="birthYear_SelectedIndexChanged"/>년
+                <asp:DropDownList ID="birthMonth" runat="server"
+                    AutoPostBack="true" OnSelectedIndexChanged="birthMonth_SelectedIndexChanged"/>월
+                <asp:DropDownList ID="birthDay" runat="server" 
+                    AutoPostBack="true" OnSelectedIndexChanged="birthDay_SelectedIndexChanged" />일
+            </td></tr>
+            <tr><td><td>
+                </td></tr>
+
+            <tr>
             <td align=right> 아이디 : </td>
             <td><asp:TextBox ID="LoginID" runat="server" MaxLength="10"/>
                 <asp:Button ID="compareID" runat="server" Text="중복확인" OnClick="compareID_Click"/>
@@ -57,33 +81,6 @@
                 </td></tr>
 
             <tr>
-            <td align=right> 이름 : </td>
-            <td><asp:TextBox ID="userName" runat="server" Text="" /></td></tr>
-            <tr><td><td>
-                <asp:RequiredFieldValidator ID="RequireValidator2" runat="server"
-                    ControlToValidate="userName"
-                    Display="Dynamic"
-                    ForeColor="Red" Font-Size="Small"
-                    ValidationGroup="vali"
-                    ErrorMessage="이름은 반드시 입력해야합니다." />
-                </td></tr>
-
-
-            <tr>
-            <td align="right"> 생년월일 : </td>
-            <td><asp:DropDownList ID="birthYear" runat="server" 
-                    OnSelectedIndexChanged="birthYear_SelectedIndexChanged"/>년
-                <asp:DropDownList ID="birthMonth" runat="server"
-                    AutoPostBack="true" OnSelectedIndexChanged="birthMonth_SelectedIndexChanged"/>월
-                <asp:DropDownList ID="birthDay" runat="server" 
-                    AutoPostBack="true" OnSelectedIndexChanged="birthDay_SelectedIndexChanged" />일
-            </td></tr>
-            <tr><td><td>
-                
-
-                </td></tr>
-
-            <tr>
             <td align=right> 이메일 : </td>
             <td><asp:TextBox ID="eMail" runat="server" Text="" Width="100" /> @
                 <asp:DropDownList ID="webSiteList" runat="server" Width="100">
@@ -102,6 +99,7 @@
                     ErrorMessage="이메일은 필수 입력사항 입니다." 
                     Display="Dynamic"/>
                 </td></tr>
+
             <tr>
             <td align=right> 전화번호 : </td>
             <td><asp:DropDownList ID="FrontNumber" runat="server" Width="50">

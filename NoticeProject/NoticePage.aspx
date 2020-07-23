@@ -14,6 +14,7 @@
     
     <!--게시판 메인 화면 구성(mssql에서 게시판의 내용을 가져와 gridview로 보여줌)-->
 
+    <!--해당 GridView는 메인 화면에 표시될 게시판에 대한 설정이다.-->
     <!--DataNavigateUrlFields는 gridview 내에 있는 DataField의 값을 가져오고 -->
     <!--HyperLink에 DataNavigateUrlFormatString을 통해 해당 값을 넣어준다.-->
     <asp:GridView ID="NoticeGrid" runat="server" 
@@ -91,7 +92,7 @@
         <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
     </asp:GridView>
 
-    
+    <!--메인 게시판에 게시물의 목록을 가져오는 JQuary-->
     <asp:SqlDataSource ID="SqlDataSource" runat="server" 
         ConnectionString="<%$ ConnectionStrings:DBConnectionString %>"
         SelectCommand="SELECT number, user_id, header, input_date FROM dbo.Board ORDER BY number DESC">

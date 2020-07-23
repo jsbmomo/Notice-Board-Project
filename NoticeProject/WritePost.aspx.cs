@@ -88,10 +88,10 @@ namespace NoticeProject
 
         protected void CancelBtn_Click(object sender, EventArgs e)
         {
-            string nowPage = Request.QueryString["nowPage"].ToString();
-           
-            //"?nowPage=Contents"
-            if(nowPage == "Contents")
+            string previousPage = Request.QueryString["previousPage"].ToString();
+
+            //"?previousPage=Contents"
+            if (previousPage == "Contents")
             {
                 Response.Redirect("~/Contact.aspx?board_id=" + updateContents_index);
             }

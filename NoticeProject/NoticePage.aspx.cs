@@ -35,7 +35,7 @@ namespace NoticeProject
 
         protected void NewNotice_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/WritePost.aspx?board_id=");
+            Response.Redirect("~/WritePost.aspx?board_id=&previousPage=main");
         }
 
         // 게시물 삭제 버튼을 클릭했을 경우.
@@ -103,7 +103,7 @@ namespace NoticeProject
 
                 //Server.Transfer("~/WritePost.aspx", true);
 
-                Response.Redirect("~/WritePost.aspx?board_id=" + board_index +"&nowPage=Board");
+                Response.Redirect("~/WritePost.aspx?board_id=" + board_index + "&previousPage=Board");
             }
             else
             {
