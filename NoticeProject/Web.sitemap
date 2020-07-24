@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+    <siteMapNode url="~/NoticePage.aspx" title="Home"  description="메인 페이지">
+        
+		<siteMapNode title="Document" description="Document">
+			<siteMapNode url="https://docs.microsoft.com/ko-kr/dotnet/api/system.web.ui.webcontrols?view=netframework-4.8" title="ASP.NET API"  description="Api" />
+			<siteMapNode url="https://docs.microsoft.com/ko-kr/aspnet/overview" title="ASP.NET 개요"  description="개요" />
+			<siteMapNode url="https://docs.microsoft.com/ko-kr/aspnet/web-forms/" title="ASP.NET WebForm"  description="WebForm" />
+		</siteMapNode>
+
+		<siteMapNode url="" title="강의실"  description="강의">
+			<siteMapNode url="https://www.youtube.com/channel/UCuuyTE8bBNYCujb7mzf8H7w" title="개발토끼" description="자료영상1" />
+			<siteMapNode url="https://www.youtube.com/channel/UC2nkWbaJt1KQDi2r2XclzTQ" title="얄팍한 코딩사전" description="자료영상2" />
+			<siteMapNode url="https://www.youtube.com/user/egoing2" title="생활코딩" description="자료영상3" />
+		</siteMapNode>
+
+		<siteMapNode url="" title="기타" description="others">
+			
+		</siteMapNode>
+    </siteMapNode>
+
+
+</siteMap>

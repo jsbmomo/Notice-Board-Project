@@ -25,10 +25,14 @@
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
 
-
-            <footer >
-                <p >&copy; <%: DateTime.Now.Year %> - 내 ASP.NET 애플리케이션</p>
-            </footer>
+            <center>
+            <asp:Panel ID="Panel" runat="server" Width="60%" HorizontalAlign="Left">
+                <footer >
+                    <p >&copy; <%: DateTime.Now.Year %> - 내 ASP.NET 애플리케이션</p>
+                </footer>
+                <br /><br />
+            </asp:Panel>
+            </center>
         </div>
 
     </form>

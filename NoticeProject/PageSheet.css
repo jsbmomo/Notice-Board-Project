@@ -1,0 +1,33 @@
+﻿/*
+    브라우저마다 기본값이 달라 여백의 오차가 있다.
+    body에 작성된 부분은 모든 브라우저에서 통일된 화면을 볼 수 있도록
+    초기화 하는 작업이다.
+*/
+
+#wrapper{
+    top:10px;
+    margin:0 auto;
+    width:900px;
+}
+
+#profile {
+    border: 1px solid #808080;
+    padding: 10px;
+    text-align: center;
+}
+
+#sidebar {
+    width:25%;
+    border: 1px solid #808080;
+    height:700px;
+    float: left;
+    padding: 5px;
+}
+
+#contents{
+
+    float:left;
+    padding:10px;
+    margin-left:10px;
+    width: 620px;
+}

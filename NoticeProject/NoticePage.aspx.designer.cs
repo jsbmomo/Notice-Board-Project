@@ -33,6 +33,24 @@ namespace NoticeProject
         protected global::System.Web.UI.WebControls.Button Logout;
 
         /// <summary>
+        /// SiteMenu 컨트롤입니다.
+        /// </summary>
+        /// <remarks>
+        /// 자동 생성 필드입니다.
+        /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TreeView SiteMenu;
+
+        /// <summary>
+        /// SiteMapDataSource1 컨트롤입니다.
+        /// </summary>
+        /// <remarks>
+        /// 자동 생성 필드입니다.
+        /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.SiteMapDataSource SiteMapDataSource1;
+
+        /// <summary>
         /// NoticeGrid 컨트롤입니다.
         /// </summary>
         /// <remarks>

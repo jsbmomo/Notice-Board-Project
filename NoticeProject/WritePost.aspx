@@ -2,16 +2,18 @@
 
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-
+    
 
     <script runat="server">
     
     </script>
 
+    <asp:TreeView ID="SiteMenu" runat="server" DataSourceID="SiteMapDataSource1"
+         ShowLines="True"></asp:TreeView>    
+    <asp:SiteMapDataSource ID="SiteMapDataSource1" runat="server" />
 
     <center>
     <asp:Table ID="WriteTable" runat="server">
-
         <asp:TableRow>
             <asp:TableCell HorizontalAlign="Right">
                 작성자 : 
@@ -44,7 +46,7 @@
         ErrorMessage="내용을 입력하세요."
         Display="Dynamic" />
 
-    <hr style="width:650px" />
+    <hr style="width:60%" />
 
     <asp:Button ID="CancelBtn" runat="server" 
         Text="취소" OnClick="CancelBtn_Click" 

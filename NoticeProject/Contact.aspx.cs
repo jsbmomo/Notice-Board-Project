@@ -19,15 +19,19 @@ namespace NoticeProject
             // 초기 페이지 설정 및 세팅
             if (!Page.IsPostBack)
             {
-                Comment_Panel.Visible = false; // 댓글 작성 창을 처음엔 숨김                
+                Comment_Panel.Visible = false; // 댓글 작성 창을 처음엔 숨김
+                Login_UserID_lbl.Text = Session["LoginUsers"].ToString();
             }
 
             board_id = Request.QueryString["board_id"].ToString(); // get 방식
-            BoardIndex.Text = board_id; // 보드 주소 저장 
+            BoardIndex.Text = board_id; // 보드 주소 저장 = 이를 통해 댓글 GridView에 해당 게시물의 댓글을 가져올 수 있음
             int commentCount = CommentGridView.Rows.Count; // 전체 댓글의 개수 count
             CommentCount_lbl.Text = commentCount.ToString();
 
-            // 게시물에 표현될 제목, 내용, 작성이
+            // 댓글의 줄바꿈을 하기위해 사용
+            
+
+            // 게시물에 표현될 제목, 내용 작성
             SqlConnection con = new SqlConnection(conSql);
             string sql = "SELECT header, user_id, input_info FROM Board WHERE number=@Number";
             SqlCommand cmd = new SqlCommand(sql, con);
@@ -132,18 +136,9 @@ namespace NoticeProject
 
                 // MSSQL DB에서는 number가 int로 저장되어 있음
                 int nextBoardID = 0;
-                try
-                {
-                    object obj = cmd.ExecuteScalar();
-
-                    nextBoardID = obj == null ? 0 : (int)obj;
-                } 
-                catch(NullReferenceException ex)
-                {
-                    nextBoardID = 0;
-                }
-                
-                
+                object obj = cmd.ExecuteScalar();
+                nextBoardID = ((obj == null) ? 0 : (int)obj);
+ 
                 con.Close();
 
                 if (nextBoardID <= 0) // int의 기본값은 0
@@ -258,19 +253,24 @@ namespace NoticeProject
             if (gridRow.Cells[0].FindControl("UpdateComment").Visible) // Label, button이 안보임
             {
                 gridRow.Cells[0].FindControl("WrittenComment").Visible = true;
+                gridRow.Cells[0].FindControl("ReplaceCommentBtn").Visible = true;
+                gridRow.Cells[0].FindControl("DeleteCommentBtn").Visible = true;
+
                 gridRow.Cells[0].FindControl("UpdateComment").Visible = false;
-                gridRow.Cells[0].FindControl("CancelUpdate").Visible = false;
                 gridRow.Cells[0].FindControl("UpdateCommentBtn").Visible = false;
+                gridRow.Cells[0].FindControl("CancelUpdateBtn").Visible = false;
             } 
             else // 초기 상태일 경우(TextBox, Button이 안보임)
             {
                 //***************** 현재 대입하려는 값이 null이라는 오류 발생
                 //((TextBox)gridRow.Cells[0].FindControl("UpdateComment")).Text = ((Label)gridRow.Cells[0].FindControl("comment")).Text;
+                gridRow.Cells[0].FindControl("UpdateComment").Visible = true;
+                gridRow.Cells[0].FindControl("UpdateCommentBtn").Visible = true; // button
+                gridRow.Cells[0].FindControl("CancelUpdateBtn").Visible = true;
 
                 gridRow.Cells[0].FindControl("WrittenComment").Visible = false;
-                gridRow.Cells[0].FindControl("CancelUpdate").Visible = true;
-                gridRow.Cells[0].FindControl("UpdateCommentBtn").Visible = true;
-                gridRow.Cells[0].FindControl("UpdateComment").Visible = true;
+                gridRow.Cells[0].FindControl("ReplaceCommentBtn").Visible = false;
+                gridRow.Cells[0].FindControl("DeleteCommentBtn").Visible = false;
             }
         }
 
@@ -280,17 +280,49 @@ namespace NoticeProject
             SqlConnection con = new SqlConnection(conSql);
             string sql = "UPDATE Comment SET comment=@Comment WHERE num = @Number_Comment";
             SqlCommand cmd = new SqlCommand(sql, con);
+
+            try
+            {
+                Button btn = (Button)sender;
+                GridViewRow gridView = (GridViewRow)btn.NamingContainer;
+
+                con.Open();
+
+                // 댓글의 Index를 찾고, 수정된 내용의 댓글을 가져옴 
+                cmd.Parameters.AddWithValue("@Number_Comment", ((TextBox)gridView.Cells[0].FindControl("HiddenIndex")).Text);
+                cmd.Parameters.AddWithValue("@Comment", ((TextBox)gridView.Cells[0].FindControl("UpdateComment")).Text);
+                cmd.ExecuteNonQuery();
+
+                con.Close();
+
+                ((Label)gridView.Cells[0].FindControl("WrittenComment")).Text = ((TextBox)gridView.Cells[0].FindControl("UpdateComment")).Text;
+
+                CloseReComment(sender);
+            }
+            catch(Exception ex)
+            {
+                Response.Write(ex);
+            }
         }
 
         protected void CancelUpdate_Click(object sender, EventArgs e)
+        {
+            CloseReComment(sender);
+        }
+
+        // 댓글 수정을 위한 TextBox와 Button을 다시 숨김 상태로 변경시킴
+        void CloseReComment(object sender)
         {
             Button btn = (Button)sender;
             GridViewRow gridRow = (GridViewRow)btn.NamingContainer;
 
             gridRow.Cells[0].FindControl("WrittenComment").Visible = true;
+            gridRow.Cells[0].FindControl("ReplaceCommentBtn").Visible = true;
+            gridRow.Cells[0].FindControl("DeleteCommentBtn").Visible = true;
+
             gridRow.Cells[0].FindControl("UpdateComment").Visible = false;
-            gridRow.Cells[0].FindControl("CancelUpdate").Visible = false;
             gridRow.Cells[0].FindControl("UpdateCommentBtn").Visible = false;
+            gridRow.Cells[0].FindControl("CancelUpdateBtn").Visible = false;
         }
     }
 }

@@ -8,14 +8,33 @@
     
 </script>
     
-<center>
-    <asp:Panel ID="HeaderPanel" runat="server" Height="100px" Width="600px">
+<link rel="stylesheet" href="PageSheet.css" />
+
+<div id="wrapper" >
+
+    <div id="sidebar">
+        <div id="profile">
+            어서오세요! <br /><asp:Label ID="Login_UserID_lbl" runat="server" BorderColor="Blue" Text="" />님, 환영합니다.<br />
+            <asp:Button ID="Logout" runat="server" Text="로그아웃" />
+        </div>
+        <br />
+        <div style="padding-left:5px;" >
+            <asp:TreeView ID="SiteMenu" runat="server" DataSourceID="SiteMapDataSource1"
+                 ShowLines="True" Height="250px" Width="195px"></asp:TreeView>
+            <asp:SiteMapDataSource ID="SiteMapDataSource1" runat="server" />
+        </div>
+    </div>
+
+    
+    <div id="contents">
+    <center>
+    <asp:Panel ID="HeaderPanel" runat="server" Width="100%">
         <asp:Label ID="BoardIndexText" runat="server" Text="게시물 번호 : " Font-Size="Smaller"/>
         <asp:Label ID="BoardIndex" runat="server" Text="" Font-Size="Smaller" /><br />
         <asp:Label ID="headerlbl" runat="server" Text="" Font-Size="Larger" />
-    </asp:Panel>
-
-    <asp:Panel ID="ButtonPanel" runat="server" Width="60%" HorizontalAlign="Right">
+    </asp:Panel><br />
+    
+    <asp:Panel ID="ButtonPanel" runat="server" Width="100%" HorizontalAlign="Right">
         <table ID="table1" style="width:100%">
             <tr>
                 <td align="left">
@@ -31,19 +50,30 @@
         </table>
     </asp:Panel>
 
-    <hr style="width:60%;" />
-    <asp:Panel ID="updatePanel" runat="server" Width="60%" HorizontalAlign="Right">
+    <hr style="width:100%;" />
+    <asp:Panel ID="updatePanel" runat="server" Width="100%" HorizontalAlign="Right">
         <asp:Button ID="UpdateBtn" runat="server" Text="수정" OnClick="UpdateBtn_Click"/>
     </asp:Panel>
 
     <!--게시물의 내용이 표시되는 부분-->
-    <asp:Panel ID="ContantsPanel" runat="server" Width="60%" Height="70%" HorizontalAlign="Left">
-        <asp:Label ID="Literal" runat="server" Text=""></asp:Label>
+    <asp:Panel ID="ContantsPanel" runat="server" Width="100%" Height="70%" HorizontalAlign="Left" CssClass="panelminimum">
+        <asp:Label ID="Literal" runat="server" Text=""></asp:Label><br />
     </asp:Panel>
 
-    <hr style="width:60%; height:2px;" />
+    
+    <style type="text/css">
+        .panelminimum
+        {
+            display: block;
+            min-height: 300px;
+            font : 14px Verdana;            
+        }
+    </style>
 
-    <asp:Panel ID="Panel4" runat="server" Width="60%" Height="10%" HorizontalAlign="Right">
+
+    <hr style="width:100%; height:2px;" />
+
+    <asp:Panel ID="Panel4" runat="server" Width="100%" Height="10%" HorizontalAlign="Right">
         <table id="table2" style="width:100%">
             <tr>
                 <td align="left">
@@ -58,7 +88,7 @@
 
 
     <!--댓글 작성 및 해당 게시물의 댓글이 보여지는 부분-->
-    <asp:Panel ID="Comment_Panel" runat="server" Width="60%" HorizontalAlign="Center">
+    <asp:Panel ID="Comment_Panel" runat="server" Width="100%" HorizontalAlign="Center">
         <asp:Label ID="CommentID" runat="server" Text="댓글 작성" />
         <asp:TextBox ID="Comment" runat="server" TextMode="MultiLine" Width="100%" Rows="7" Wrap="true"/><br />
         <asp:RequiredFieldValidator ID="RequiredField" runat="server"
@@ -70,18 +100,19 @@
         <asp:Button ID="CommentStore" runat="server" Text="댓글 등록" OnClick="CommentInput_Click" ValidationGroup="vali"/><br />
     </asp:Panel><br /><br />
 
-    <asp:Panel ID="CommentCount_Panel" runat="server" Width="60%" HorizontalAlign="Left">
+    <asp:Panel ID="CommentCount_Panel" runat="server" Width="100%" HorizontalAlign="Left">
         전체 댓글 수 : <asp:Label ID="CommentCount_lbl" runat="server" Text=""/>
     </asp:Panel><br />
 
     <!--댓글이 보일 GridView와 댓글 수정/삭제 버튼-->
-    <asp:Panel ID="CommentViewPanel" runat="server" Width="60%" HorizontalAlign="Center">
+    <!--추가로 댓글의 주소를 별도로 보관하기 위해 TextBox에 Index를 저장하고 TextBox를 보이지 않게함-->
+    <asp:Panel ID="CommentViewPanel" runat="server" Width="100%" HorizontalAlign="Center">
         
         <asp:gridview id="CommentGridView" runat="server" style="width:100%"
             DataSourceID="SqlDataSource" 
             AutoGenerateColumns="False"
             HeaderStyle-BorderStyle="None"
-            emptydatatext="<br />댓글이 없습니다."
+            emptydatatext="<br />댓글이 없습니다.<br /><br />"
             ShowHeader="false"
             GridLines="None">
 
@@ -105,9 +136,7 @@
                             ErrorMessage="공백을 저장할 수 없습니다."
                             ValidationGroup="NewValue"
                             Display="Dynamic" />
-                        <asp:Button ID="CancelUpdate" runat="server" Text="취소" width="80px" Visible="false" OnClick="CancelUpdate_Click"/>
-                        <asp:Button ID="UpdateCommentBtn" runat="server" Text="수정완료" width="80px" Visible="false" 
-                            ValidationGroup="NewValue" OnClick="UpdateCommentBtn_Click"/><br />
+                        <br />
                         <hr />
                     </ItemTemplate>
                 </asp:TemplateField>
@@ -115,12 +144,16 @@
                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" 
                     ShowHeader="false" ItemStyle-Width="15%">
                     <ItemTemplate>
-                        <asp:Button ID="DeleteComment" runat="server" Text="삭제" Font-Size="X-Small" 
+                        <asp:Button ID="DeleteCommentBtn" runat="server" Text="삭제" Font-Size="X-Small"  Width="60px"
                             OnClick="DeleteComment_Click"
-                            OnClientClick="return confirm('정말 삭제하시겠습니까?')"/>
-                        <asp:Button ID="ReplaceComment" runat="server" Text="수정" Font-Size="X-Small" 
+                            OnClientClick="return confirm('정말 삭제하시겠습니까?')"/><br />
+                        <asp:Button ID="ReplaceCommentBtn" runat="server" Text="수정" Font-Size="X-Small" Width="60px"
                             OnClick="ReplaceComment_Click"/>
 
+                        <asp:Button ID="CancelUpdateBtn" runat="server" Text="취소" width="60px" Visible="false" Font-Size="X-Small"
+                            OnClick="CancelUpdate_Click"/><br />
+                        <asp:Button ID="UpdateCommentBtn" runat="server" Text="수정완료" width="60px" Visible="false" Font-Size="X-Small"
+                            ValidationGroup="NewValue" OnClick="UpdateCommentBtn_Click"/>
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>
@@ -140,8 +173,9 @@
 
     </asp:Panel>
     
-    <hr style="width:63%;" />
-
-</center>
+    <hr style="width:100%;" /><br /><br />
+    </center>
+    </div>
+</div>
 
 </asp:Content>

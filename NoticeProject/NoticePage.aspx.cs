@@ -17,10 +17,7 @@ namespace NoticeProject
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            string loginUser = "";
-
-            loginUser = Session["LoginUsers"].ToString();
-            Login_UserID_lbl.Text = loginUser + "님, 환영합니다.";
+            Login_UserID_lbl.Text = Session["LoginUsers"].ToString();
         }
 
         protected void movepage_Click(object sender, EventArgs e)
