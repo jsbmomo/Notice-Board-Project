@@ -20,6 +20,13 @@ namespace NoticeProject
             Login_UserID_lbl.Text = Session["LoginUsers"].ToString();
         }
 
+        protected void Logout_Click(object sender, EventArgs e)
+        {
+            //System.Web.Security
+            Session.Clear();
+            Response.Redirect("~/Default.aspx");
+        }
+
         protected void movepage_Click(object sender, EventArgs e)
         {
 
@@ -114,9 +121,6 @@ namespace NoticeProject
         {
             
         }
-
-
-
 
         /* 게시판 정렬 기능 추가시 디자인 페이지에서 "정렬 기능 사용"에 체크해 줌으로
          * 간단하게 사용가능하다. 하지만 해당 기능을 직접 생성하고 싶다면 아래의 소스 코드를 

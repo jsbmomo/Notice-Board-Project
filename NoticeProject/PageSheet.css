@@ -4,20 +4,31 @@
     초기화 하는 작업이다.
 */
 
+/* Header */
+.header{
+    height: 80px;
+    margin-right: 10px;
+    padding: 10px;
+    background-color: dimgrey;
+}
+
+/* contents */
 #wrapper{
-    top:10px;
-    margin:0 auto;
-    width:900px;
+    height: 100%;
+    top: 10px;
+    margin: 0 auto;
+    width: 900px;
 }
 
 #profile {
+    height: 150px;
     border: 1px solid #808080;
     padding: 10px;
     text-align: center;
 }
 
 #sidebar {
-    width:25%;
+    width:220px;
     border: 1px solid #808080;
     height:700px;
     float: left;
@@ -25,9 +36,21 @@
 }
 
 #contents{
-
     float:left;
     padding:10px;
     margin-left:10px;
     width: 620px;
+}
+
+/* footer */
+.footer{
+    left: 0;
+    height: 70px;
+    width: 100%;
+    bottom: 0;
+    padding: 15px 0;
+    color: white;
+    position: static; 
+    text-align: right;
+    background: #ccc;
 }

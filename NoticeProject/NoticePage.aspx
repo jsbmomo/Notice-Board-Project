@@ -14,7 +14,7 @@
     <div id="sidebar">
         <div id="profile">
             어서오세요! <br /><asp:Label ID="Login_UserID_lbl" runat="server" BorderColor="Blue" Text="" />님, 환영합니다.<br />
-            <asp:Button ID="Logout" runat="server" Text="로그아웃" />
+            <asp:Button ID="Logout" runat="server" Text="로그아웃" OnClick="Logout_Click" />
         </div>
         <br />
         <div style="padding-left:5px;" >
@@ -26,14 +26,21 @@
 
     <div id="contents">
 
+
     <center>
+    <h2>게시판 목록</h2>
     <hr />
-    <asp:GridView ID="NoticeGrid" runat="server" 
+
+    <!--해당 GridView는 메인 화면에 표시될 게시판에 대한 설정이다.-->
+    <!--DataNavigateUrlFields는 gridview 내에 있는 DataField의 값을 가져오고 -->
+    <!--HyperLink에 DataNavigateUrlFormatString을 통해 해당 값을 넣어준다.-->
+    <div class="GridViewClass">
+    <asp:GridView ID="NoticeGrid" runat="server"
         DataSourceID="SqlDataSource"
         emptydatatext="No data avilable"
         AllowPaging="True"
         AllowSorting="True"
-        
+        PageSize="15"
         AutoGenerateColumns="False"
         DataKeyNames="number"
         ForeColor="#333333" GridLines="None" 
@@ -44,7 +51,7 @@
         <Columns>
             <asp:BoundField DataField="number" 
                 ItemStyle-Width="9%"
-                HeaderText="ID" 
+                HeaderText="번호" 
                 InsertVisible="false" ReadOnly="true" 
                 SortExpression="number" 
                 ItemStyle-HorizontalAlign="Center" ShowHeader="true"/>
@@ -54,7 +61,7 @@
                 DataNavigateUrlFields="number, user_id"
                 DataNavigateUrlFormatString="~/Contact.aspx?board_id={0}&user={1}"
                 target="_self"
-                HeaderText="Header" 
+                HeaderText="제목" 
                 ControlStyle-ForeColor="Blue"
                 SortExpression="header"
                 ItemStyle-HorizontalAlign="Center" ShowHeader="true">
@@ -62,29 +69,29 @@
 
             <asp:BoundField DataField="user_id"
                 ItemStyle-Width="22%"
-                HeaderText="Written"
+                HeaderText="작성자"
                 InsertVisible="false" ReadOnly="true"
                 SortExpression="user_id"
                 ItemStyle-HorizontalAlign="Center" ShowHeader="true"/>
 
             <asp:BoundField DataField="input_date" 
                 ItemStyle-Width="21%"
-                HeaderText="Date" 
+                HeaderText="작성 날짜" 
                 SortExpression="input_date" 
                 DataFormatString="{0:yyyy/MM/dd}"
                 ItemStyle-HorizontalAlign="Center" ShowHeader="true"/>
 
-            <asp:TemplateField HeaderText="others" ItemStyle-HorizontalAlign="Center" 
+            <asp:TemplateField HeaderText="기타" ItemStyle-HorizontalAlign="Center" 
                 ShowHeader="true" ItemStyle-Width="20%">
                 <ItemTemplate>
                     <asp:Button ID="deleteBtn" runat="server" Text="삭제"  
-                        Width="50px" Height="27px"
+                        Height="27px"
                         CommandName="DeleteItem"
                         CommandArgument='<% # Eval("user_id") %>' 
                         OnClick="deleteBtn_Click"/>
                     
                     <asp:Button ID="updateBtn" runat="server" Text="수정" 
-                        Width="50px" Height="27px"
+                        Height="27px"
                         CommandName="UpdateItem"
                         CommandArgument='<% # Eval("user_id") %>' 
                         OnClick="updateBtn_Click"/>
@@ -103,28 +110,29 @@
         <SortedDescendingCellStyle BackColor="#FFFDF8" />
         <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
     </asp:GridView>
+    </div>
 
-
-    <!--게시판 메인 화면 구성(mssql에서 게시판의 내용을 가져와 gridview로 보여줌)-->
-
-    <!--해당 GridView는 메인 화면에 표시될 게시판에 대한 설정이다.-->
-    <!--DataNavigateUrlFields는 gridview 내에 있는 DataField의 값을 가져오고 -->
-    <!--HyperLink에 DataNavigateUrlFormatString을 통해 해당 값을 넣어준다.-->
+    <!--GirdView에 적용될 CSS-->
+    <style type="text/css">
+        .GridViewClass{
+            text-align:center;
+            
+        }
+    </style>
 
     <!--메인 게시판에 게시물의 목록을 가져오는 JQuary-->
+    <!--게시판 메인 화면 구성(mssql에서 게시판의 내용을 가져와 gridview로 보여줌)-->
     <asp:SqlDataSource ID="SqlDataSource" runat="server" 
         ConnectionString="<%$ ConnectionStrings:DBConnectionString %>"
         SelectCommand="SELECT number, user_id, header, input_date FROM dbo.Board ORDER BY number DESC">
     </asp:SqlDataSource> 
     
     <hr />
-    <asp:Panel ID="Panel1" runat="server" Width="60%" Height="50px" HorizontalAlign="Right">
-        <asp:Button ID="NewNotice" runat="server" Text="게시물 작성" OnClick="NewNotice_Click" />
+    <asp:Panel ID="Panel1" runat="server" Width="100%" Height="50px" HorizontalAlign="Right">
+        <asp:Button ID="NewNotice" runat="server" Height="30px" Text="게시물 작성" OnClick="NewNotice_Click" />
     </asp:Panel>
 
     </center>
-    </div>
-    </div>
 
 
     <div class="jumbotron">
@@ -133,6 +141,8 @@
         <p><a href="http://www.asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
     </div>
 
+    </div>
+    </div>
    
     <p>Use this area to provide additional information.</p>
 

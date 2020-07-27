@@ -5,7 +5,8 @@
 
 <!--마스터 폼에서는 type="text/javascript"로 JS 작성 가능-->
 <script type="text/javascript">
-    
+
+
 </script>
     
 <link rel="stylesheet" href="PageSheet.css" />
@@ -15,7 +16,7 @@
     <div id="sidebar">
         <div id="profile">
             어서오세요! <br /><asp:Label ID="Login_UserID_lbl" runat="server" BorderColor="Blue" Text="" />님, 환영합니다.<br />
-            <asp:Button ID="Logout" runat="server" Text="로그아웃" />
+            <asp:Button ID="Logout" runat="server" Text="로그아웃" OnClick="Logout_Click" />
         </div>
         <br />
         <div style="padding-left:5px;" >
@@ -27,18 +28,20 @@
 
     
     <div id="contents">
+    <hr />
     <center>
     <asp:Panel ID="HeaderPanel" runat="server" Width="100%">
         <asp:Label ID="BoardIndexText" runat="server" Text="게시물 번호 : " Font-Size="Smaller"/>
         <asp:Label ID="BoardIndex" runat="server" Text="" Font-Size="Smaller" /><br />
-        <asp:Label ID="headerlbl" runat="server" Text="" Font-Size="Larger" />
+        <asp:Label ID="headerlbl" runat="server" Text="" Font-Size="XX-Large" CssClass="chsFont" />
     </asp:Panel><br />
     
     <asp:Panel ID="ButtonPanel" runat="server" Width="100%" HorizontalAlign="Right">
         <table ID="table1" style="width:100%">
             <tr>
                 <td align="left">
-                    작성자 : <asp:Label ID="Written" runat="server" ForeColor="Blue" Text="" />
+                    작성자 : <asp:Label ID="Written" runat="server" ForeColor="Blue" Text=""
+                              CssClass="chsFont"/>
                 </td>
                 <td align="right">
                     <input type="submit" name="Previous_Btn" runat="server" 
@@ -62,11 +65,13 @@
 
     
     <style type="text/css">
-        .panelminimum
-        {
+        .panelminimum{
             display: block;
             min-height: 300px;
             font : 14px Verdana;            
+        }
+        .chsFont{
+            font-weight: bold;
         }
     </style>
 

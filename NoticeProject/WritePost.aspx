@@ -8,10 +8,22 @@
     
     </script>
 
+
+    <div id="wrapper">
+
+    <div id="sidebar">
+        <div id="profile">
+            어서오세요! <br /><asp:Label ID="Login_UserID_lbl" runat="server" BorderColor="Blue" Text="" />님, 환영합니다.<br />
+            <asp:Button ID="Logout" runat="server" Text="로그아웃" OnClick="Logout_Click" />
+        </div>
+
+
     <asp:TreeView ID="SiteMenu" runat="server" DataSourceID="SiteMapDataSource1"
          ShowLines="True"></asp:TreeView>    
     <asp:SiteMapDataSource ID="SiteMapDataSource1" runat="server" />
+    </div>
 
+    <div id="contents">
     <center>
     <asp:Table ID="WriteTable" runat="server">
         <asp:TableRow>
@@ -20,18 +32,24 @@
             </asp:TableCell>
             <asp:TableCell>
                 <asp:Label ID="Written" runat="server" Text="" />
-            </asp:TableCell></asp:TableRow><asp:TableRow>
+            </asp:TableCell>
+        </asp:TableRow>
+        <asp:TableRow>
             <asp:TableCell HorizontalAlign="Right">
                 제목 :
             </asp:TableCell><asp:TableCell>
                 <asp:TextBox ID="WriteHeader" runat="server" MaxLength="30" Width="550"/>
-            </asp:TableCell></asp:TableRow><asp:TableRow>
+            </asp:TableCell>
+        </asp:TableRow>
+        <asp:TableRow>
             <asp:TableCell HorizontalAlign="Right" VerticalAlign="Top">
                 내용 :
             </asp:TableCell><asp:TableCell>
                 <asp:TextBox ID="WriteContents" runat="server" Width="550"
                     TextMode="MultiLine" Rows="20" Wrap="true"/>
-            </asp:TableCell></asp:TableRow></asp:Table><asp:RequiredFieldValidator 
+            </asp:TableCell>
+        </asp:TableRow>
+    </asp:Table><asp:RequiredFieldValidator 
         ID="CheckHeader" runat="server" 
         ValidationGroup="CreateBoard"
         ForeColor="Red" Font-Size="Medium"
@@ -46,7 +64,7 @@
         ErrorMessage="내용을 입력하세요."
         Display="Dynamic" />
 
-    <hr style="width:60%" />
+    <hr />
 
     <asp:Button ID="CancelBtn" runat="server" 
         Text="취소" OnClick="CancelBtn_Click" 
@@ -61,5 +79,6 @@
         ValidationGroup="CreateBoard" />
 
     </center>
-
+    </div>
+    </div>
 </asp:Content>

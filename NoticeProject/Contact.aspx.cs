@@ -14,6 +14,12 @@ namespace NoticeProject
         private string board_id = ""; // 게시판의 고유 넘버
         private string conSql = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
 
+        protected void Logout_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Response.Redirect("~/Default.aspx");
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             // 초기 페이지 설정 및 세팅
@@ -49,9 +55,9 @@ namespace NoticeProject
                 string board_writter = ""; // 게시판 작성자의 아이디를 가져옴 
                 while (reader.Read())
                 {
-                    board_writter = reader["user_id"].ToString();
                     board_header = reader["header"].ToString();
                     board_contents = reader["input_info"].ToString();
+                    board_writter = reader["user_id"].ToString();
                 }
 
                 // 게시물 저장 시, mssql이 개행문자 역시 하나의 문자로만 저장을 한다.
@@ -69,8 +75,7 @@ namespace NoticeProject
             catch (Exception ex)
             {
                 Response.Write(ex);
-            }
-            
+            }   
         }
 
         // 메인화면으로 돌아가는 버튼
@@ -189,10 +194,12 @@ namespace NoticeProject
             }
         }
 
+
+        // 댓글을 작성하는 TextBox를 "댓글 작성" 버튼을 누를때마다
+        // 보이게 하게나 또는 숨김(기본적으로 숨김상태)
         protected void CommentHidden_Click(object sender, EventArgs e)
         {
-            // 댓글을 작성하는 TextBox를 "댓글 작성" 버튼을 누를때마다
-            // 보이게 하게나 또는 숨김(기본적으로 숨김상태)
+           
             if (Comment_Panel.Visible) 
             {
                 Comment_Panel.Visible = false;
@@ -203,74 +210,97 @@ namespace NoticeProject
             }
         }
 
+
         // 댓글 삭제 및 수정 기능 작성
         // 댓글을 작성한 사용자의 권한이 필요(hidden 방식으로 작성자가 아닌자는 button 숨기기)
         // DeleteComment 버튼의 OnClientClick 옵션을 통해, 확인 또는 취소가 가능한 알림창이 뜨고
         // 확인을 누를 경우에만 OnClick 이벤트가 실행된다.
         protected void DeleteComment_Click(object sender, EventArgs e)
         {
-            // GridView의 TemplateField 안에 있는 Text를 가져오기 위해 사용
-            // 아래의 방법은 GridView에서 특정 행의 텍스트를 가져오는 방법으로 
-            // Rows[0]은 GridView의 가장 첫번째 값을 가져온다.
-            //-- string commentIndex = ((TextBox)CommentList.FindControl("HiddenIndex")).Text;
-
-            // 위의 방법을 응용하여 댓글의 인덱스를 찾는 방법을 사용하고 있다.
-            // 버튼의 리스너를 가져오고, 버튼의 GridView 내의 열(Row) 위치를 가져온다.
-            // 이후, 행(Cells)의 위치를 가져오고, FindControl로 Label를 선택하여 텍스트를 가져온다.
             Button deleteBtn = (Button)sender;
             GridViewRow gridrow = (GridViewRow)deleteBtn.NamingContainer;
-            string commentIndex = ((TextBox)gridrow.Cells[0].FindControl("HiddenIndex")).Text;
 
-            SqlConnection con = new SqlConnection(conSql);
-            string sql = "DELETE FROM Comment WHERE num=@Number";
-            SqlCommand cmd = new SqlCommand(sql, con);
+            string commentWritten = ((Label)gridrow.FindControl("Written")).Text;
 
-            cmd.Parameters.AddWithValue("@Number", commentIndex);
-
-            try
+            if (commentWritten == Login_UserID_lbl.Text)
             {
-                con.Open();
-                cmd.ExecuteNonQuery();
+                // GridView의 TemplateField 안에 있는 Text를 가져오기 위해 사용
+                // 아래의 방법은 GridView에서 특정 행의 텍스트를 가져오는 방법으로 
+                // Rows[0]은 GridView의 가장 첫번째 값을 가져온다.
+                //-- string commentIndex = ((TextBox)CommentList.FindControl("HiddenIndex")).Text;
 
-                CommentGridView.DataBind(); // GridView 갱신(connection이 닫히기 전에 사용해야 한다.
+                // 위의 방법을 응용하여 댓글의 인덱스를 찾는 방법을 사용하고 있다.
+                // 버튼의 리스너를 가져오고, 버튼의 GridView 내의 열(Row) 위치를 가져온다.
+                // 이후, 행(Cells)의 위치를 가져오고, FindControl로 Label를 선택하여 텍스트를 가져온다.
 
-                con.Close();
+                string commentIndex = ((TextBox)gridrow.Cells[0].FindControl("HiddenIndex")).Text;
+
+                SqlConnection con = new SqlConnection(conSql);
+                string sql = "DELETE FROM Comment WHERE num=@Number";
+                SqlCommand cmd = new SqlCommand(sql, con);
+
+                cmd.Parameters.AddWithValue("@Number", commentIndex);
+
+                try
+                {
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+
+                    CommentGridView.DataBind(); // GridView 갱신(connection이 닫히기 전에 사용해야 한다.
+
+                    con.Close();
+                }
+                catch (Exception ex)
+                {
+                    Response.Write(ex);
+                }
             }
-            catch(Exception ex)
+            else
             {
-                Response.Write(ex);
+                ClientScript.RegisterStartupScript(typeof(Page),"alert",
+                    "<script> alert('삭제할 권한이 없습니다.') </script>");
             }
         }
 
 
-        //댓글의 내용을 수정하는 버튼(댓글 수정을 위한 텍스트 박스 및 버튼 보이기)
+        // 댓글의 내용을 수정하는 버튼(댓글 수정을 위한 텍스트 박스 및 버튼 보이기)
         protected void ReplaceComment_Click(object sender, EventArgs e)
         {
             Button btnLocation = (Button)sender;
             GridViewRow gridRow = (GridViewRow)btnLocation.NamingContainer;
 
-            // 버튼을 클릭했을때, 댓글을 수정하는 TextBox가 보이는 경우(초기에는 안보임)
-            if (gridRow.Cells[0].FindControl("UpdateComment").Visible) // Label, button이 안보임
-            {
-                gridRow.Cells[0].FindControl("WrittenComment").Visible = true;
-                gridRow.Cells[0].FindControl("ReplaceCommentBtn").Visible = true;
-                gridRow.Cells[0].FindControl("DeleteCommentBtn").Visible = true;
+            string commentWirtten = ((Label)gridRow.FindControl("Written")).Text;
 
-                gridRow.Cells[0].FindControl("UpdateComment").Visible = false;
-                gridRow.Cells[0].FindControl("UpdateCommentBtn").Visible = false;
-                gridRow.Cells[0].FindControl("CancelUpdateBtn").Visible = false;
-            } 
-            else // 초기 상태일 경우(TextBox, Button이 안보임)
+            if (Login_UserID_lbl.Text == commentWirtten)
             {
-                //***************** 현재 대입하려는 값이 null이라는 오류 발생
-                //((TextBox)gridRow.Cells[0].FindControl("UpdateComment")).Text = ((Label)gridRow.Cells[0].FindControl("comment")).Text;
-                gridRow.Cells[0].FindControl("UpdateComment").Visible = true;
-                gridRow.Cells[0].FindControl("UpdateCommentBtn").Visible = true; // button
-                gridRow.Cells[0].FindControl("CancelUpdateBtn").Visible = true;
+                // 버튼을 클릭했을때, 댓글을 수정하는 TextBox가 보이는 경우(초기에는 안보임)
+                if (gridRow.Cells[0].FindControl("UpdateComment").Visible) // Label, button이 안보임
+                {
+                    gridRow.Cells[0].FindControl("WrittenComment").Visible = true;
+                    gridRow.Cells[0].FindControl("ReplaceCommentBtn").Visible = true;
+                    gridRow.Cells[0].FindControl("DeleteCommentBtn").Visible = true;
 
-                gridRow.Cells[0].FindControl("WrittenComment").Visible = false;
-                gridRow.Cells[0].FindControl("ReplaceCommentBtn").Visible = false;
-                gridRow.Cells[0].FindControl("DeleteCommentBtn").Visible = false;
+                    gridRow.Cells[0].FindControl("UpdateComment").Visible = false;
+                    gridRow.Cells[0].FindControl("UpdateCommentBtn").Visible = false;
+                    gridRow.Cells[0].FindControl("CancelUpdateBtn").Visible = false;
+                }
+                else // 초기 상태일 경우(TextBox, Button이 안보임)
+                {
+                    //***************** 현재 대입하려는 값이 null이라는 오류 발생
+                    //((TextBox)gridRow.Cells[0].FindControl("UpdateComment")).Text = ((Label)gridRow.Cells[0].FindControl("comment")).Text;
+                    gridRow.Cells[0].FindControl("UpdateComment").Visible = true;
+                    gridRow.Cells[0].FindControl("UpdateCommentBtn").Visible = true; // button
+                    gridRow.Cells[0].FindControl("CancelUpdateBtn").Visible = true;
+
+                    gridRow.Cells[0].FindControl("WrittenComment").Visible = false;
+                    gridRow.Cells[0].FindControl("ReplaceCommentBtn").Visible = false;
+                    gridRow.Cells[0].FindControl("DeleteCommentBtn").Visible = false;
+                }
+            }
+            else
+            {
+                ClientScript.RegisterStartupScript(typeof(Page), "alert",
+                    "<script> alert(수정할 권한이 없습니다.); </script>");
             }
         }
 
@@ -299,18 +329,20 @@ namespace NoticeProject
 
                 CloseReComment(sender);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Response.Write(ex);
             }
+            
         }
+
 
         protected void CancelUpdate_Click(object sender, EventArgs e)
         {
             CloseReComment(sender);
         }
 
-        // 댓글 수정을 위한 TextBox와 Button을 다시 숨김 상태로 변경시킴
+        // 댓글 수정을 위한 TextBox와 Button을 다시 숨김 상태로 변경시키는 함수(참조 2개)
         void CloseReComment(object sender)
         {
             Button btn = (Button)sender;
@@ -324,5 +356,6 @@ namespace NoticeProject
             gridRow.Cells[0].FindControl("UpdateCommentBtn").Visible = false;
             gridRow.Cells[0].FindControl("CancelUpdateBtn").Visible = false;
         }
+
     }
 }

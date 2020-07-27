@@ -15,6 +15,7 @@ namespace NoticeProject
         private static string updateContents_index = "";// Post로 수정될 게시물의 인덱스를 받음 
 
         private string sqlCon = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             Written.Text = Session["LoginUsers"].ToString();
@@ -84,6 +85,13 @@ namespace NoticeProject
                     UpdateContentsBtn.Visible = false;
                 }
             }
+        }
+
+
+        protected void Logout_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Response.Redirect("~/Default.aspx");
         }
 
         protected void CancelBtn_Click(object sender, EventArgs e)
