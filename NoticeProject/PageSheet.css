@@ -5,7 +5,11 @@
 */
 
 /* Header */
-.header{
+.body{
+    text-align: center;
+}
+
+.menu{
     height: 80px;
     margin-right: 10px;
     padding: 10px;
@@ -13,11 +17,19 @@
 }
 
 /* contents */
-#wrapper{
-    height: 100%;
+#wrapper {
+    width: 100%;
+    height: auto;
     top: 10px;
-    margin: 0 auto;
-    width: 900px;
+}
+
+#main {
+    text-align: center;
+    width: 80%;
+    height: 90%;
+    padding: 8px;
+    padding-bottom: 4em;
+    background-color: White;
 }
 
 #profile {
@@ -28,29 +40,29 @@
 }
 
 #sidebar {
-    width:220px;
     border: 1px solid #808080;
-    height:700px;
+    width: 35%;
     float: left;
     padding: 5px;
 }
 
-#contents{
-    float:left;
-    padding:10px;
-    margin-left:10px;
-    width: 620px;
+#contents {
+    width: 65%;
+    float: left;
+    padding: 10px;
+    margin-left: 10px;
 }
 
 /* footer */
-.footer{
-    left: 0;
-    height: 70px;
-    width: 100%;
-    bottom: 0;
-    padding: 15px 0;
-    color: white;
-    position: static; 
+#footer {
+    font-size: 15px;
+    color: #3d3737;
     text-align: right;
     background: #ccc;
+    line-height: 60px;
+    height: 60px;
+    width: 100%;
+    position: relative;
+    margin-top: 30px;
 }
+

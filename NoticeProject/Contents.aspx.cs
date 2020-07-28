@@ -16,7 +16,7 @@ namespace NoticeProject
 
         protected void Logout_Click(object sender, EventArgs e)
         {
-            Session.Clear();
+            Session.Remove("LoginUsers");
             Response.Redirect("~/Default.aspx");
         }
 

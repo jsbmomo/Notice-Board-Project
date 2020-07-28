@@ -90,7 +90,7 @@ namespace NoticeProject
 
         protected void Logout_Click(object sender, EventArgs e)
         {
-            Session.Clear();
+            Session.Remove("LoginUsers");
             Response.Redirect("~/Default.aspx");
         }
 
@@ -101,7 +101,7 @@ namespace NoticeProject
             //"?previousPage=Contents"
             if (previousPage == "Contents")
             {
-                Response.Redirect("~/Contact.aspx?board_id=" + updateContents_index);
+                Response.Redirect("~/Contents.aspx?board_id=" + updateContents_index);
             }
             else
             {

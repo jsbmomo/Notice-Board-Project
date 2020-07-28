@@ -17,13 +17,17 @@ namespace NoticeProject
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Login_UserID_lbl.Text = Session["LoginUsers"].ToString();
+            if (!Page.IsPostBack)
+            {
+                Login_UserID_lbl.Text = Session["LoginUsers"].ToString();
+            }
+            
         }
 
         protected void Logout_Click(object sender, EventArgs e)
         {
             //System.Web.Security
-            Session.Clear();
+            Session.Remove("LoginUsers");
             Response.Redirect("~/Default.aspx");
         }
 
@@ -120,6 +124,11 @@ namespace NoticeProject
         protected void NoticeGrid_SelectedIndexChanged(object sender, EventArgs e)
         {
             
+        }
+
+        protected void privateInfoBtn_ServerClick(object sender, EventArgs e)
+        {
+            Response.Redirect("~/PrivateSet.aspx?");
         }
 
         /* 게시판 정렬 기능 추가시 디자인 페이지에서 "정렬 기능 사용"에 체크해 줌으로

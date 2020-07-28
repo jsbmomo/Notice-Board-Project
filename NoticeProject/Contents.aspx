@@ -1,9 +1,9 @@
-﻿<%@ Page Title="Contact" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Contact.aspx.cs" Inherits="NoticeProject.Contact" %>
+﻿<%@ Page Title="Contact" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Contents.aspx.cs" Inherits="NoticeProject.Contact" %>
 
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
-<!--마스터 폼에서는 type="text/javascript"로 JS 작성 가능-->
+    <!--마스터 폼에서는 type="text/javascript"로 JS 작성 가능-->
 <script type="text/javascript">
 
 

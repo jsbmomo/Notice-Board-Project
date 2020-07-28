@@ -7,11 +7,7 @@
 
 </script>
 
-<!--https://forums.asp.net/t/2106064.aspx?How+to+create+dynamic+horizontal+bootstrap+nav+bar+using+asp+net-->
-<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link href="PageSheet.css" rel="stylesheet"/>
 
 <html lang="ko">
 <head runat="server">
@@ -25,27 +21,28 @@
 
 <body>
     <form runat="server">
-        <nav class="navbar navbar-inverse">
-          <div class="container-fluid">
-            <div class="navbar-header">
-              <a class="navbar-brand" href="#">WebSiteName</a>
-            </div>
-            <ul class="nav navbar-nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#">Page 2</a></li>
-              <li><a href="#">Page 3</a></li>
+        <header id="head">
+            웹 프로그래밍
+        </header>
+
+        <nav id="menu">
+            <ul>
+                <li> 여기는 메뉴 </li>
+                <li> 여기는 메뉴2 </li>
             </ul>
-          </div>
+            <ul>
+                
+            </ul>
         </nav>
 
-        <div class="container body-content">
+        <section id="main">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
-        </div>
+        </section>
             
-        <div id="footer">
-            &copy; <%: DateTime.Now.Year %> - 내 ASP.NET 애플리케이션 <br />
-        </div>
+        <footer id="footer" >
+            &copy;<B> <%: DateTime.Now.Year %> </B> - 내 ASP.NET 애플리케이션 &nbsp;&nbsp;&nbsp;
+        </footer>
     
     </form>
 </body>

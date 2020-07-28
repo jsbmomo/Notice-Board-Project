@@ -106,7 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
-    <Content Include="Contact.aspx" />
+    <Content Include="Contents.aspx" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -125,6 +125,7 @@
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="PageSheet.css" />
+    <Content Include="PrivateSet.aspx" />
     <Content Include="WritePost.aspx" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="NewAccount.aspx" />
@@ -174,12 +175,12 @@
       <DependentUpon>About.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Contact.aspx.cs">
-      <DependentUpon>Contact.aspx</DependentUpon>
+    <Compile Include="Contents.aspx.cs">
+      <DependentUpon>Contents.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Contact.aspx.designer.cs">
-      <DependentUpon>Contact.aspx</DependentUpon>
+    <Compile Include="Contents.aspx.designer.cs">
+      <DependentUpon>Contents.aspx</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -204,6 +205,13 @@
     </Compile>
     <Compile Include="NoticePage.aspx.designer.cs">
       <DependentUpon>NoticePage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PrivateSet.aspx.cs">
+      <DependentUpon>PrivateSet.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PrivateSet.aspx.designer.cs">
+      <DependentUpon>PrivateSet.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Site.Master.cs">
