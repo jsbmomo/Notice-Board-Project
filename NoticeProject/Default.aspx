@@ -57,9 +57,12 @@
     </script>
 
 
-    <center>
-        <div>
+    <section>
+        <article>
             <h2>Notice Board</h2> <br />
+        </article>
+
+        <article>
             <hr style="width:60%;"/><br />
             <table>
                 <tr>
@@ -91,7 +94,7 @@
 
             <hr style="width:60%;"/> <br />
                
-        </div>
-    </center>
+        </article>
+    </section>
 
 </asp:Content>

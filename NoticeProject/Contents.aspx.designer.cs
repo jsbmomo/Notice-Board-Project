@@ -51,15 +51,6 @@ namespace NoticeProject
         protected global::System.Web.UI.WebControls.SiteMapDataSource SiteMapDataSource1;
 
         /// <summary>
-        /// HeaderPanel 컨트롤입니다.
-        /// </summary>
-        /// <remarks>
-        /// 자동 생성 필드입니다.
-        /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel HeaderPanel;
-
-        /// <summary>
         /// BoardIndexText 컨트롤입니다.
         /// </summary>
         /// <remarks>
@@ -87,15 +78,6 @@ namespace NoticeProject
         protected global::System.Web.UI.WebControls.Label headerlbl;
 
         /// <summary>
-        /// ButtonPanel 컨트롤입니다.
-        /// </summary>
-        /// <remarks>
-        /// 자동 생성 필드입니다.
-        /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel ButtonPanel;
-
-        /// <summary>
         /// Written 컨트롤입니다.
         /// </summary>
         /// <remarks>
@@ -103,15 +85,6 @@ namespace NoticeProject
         /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Written;
-
-        /// <summary>
-        /// updatePanel 컨트롤입니다.
-        /// </summary>
-        /// <remarks>
-        /// 자동 생성 필드입니다.
-        /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel updatePanel;
 
         /// <summary>
         /// UpdateBtn 컨트롤입니다.
@@ -123,15 +96,6 @@ namespace NoticeProject
         protected global::System.Web.UI.WebControls.Button UpdateBtn;
 
         /// <summary>
-        /// ContantsPanel 컨트롤입니다.
-        /// </summary>
-        /// <remarks>
-        /// 자동 생성 필드입니다.
-        /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel ContantsPanel;
-
-        /// <summary>
         /// Literal 컨트롤입니다.
         /// </summary>
         /// <remarks>
@@ -139,15 +103,6 @@ namespace NoticeProject
         /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Literal;
-
-        /// <summary>
-        /// Panel4 컨트롤입니다.
-        /// </summary>
-        /// <remarks>
-        /// 자동 생성 필드입니다.
-        /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel Panel4;
 
         /// <summary>
         /// BackButton 컨트롤입니다.
@@ -213,15 +168,6 @@ namespace NoticeProject
         protected global::System.Web.UI.WebControls.Button CommentStore;
 
         /// <summary>
-        /// CommentCount_Panel 컨트롤입니다.
-        /// </summary>
-        /// <remarks>
-        /// 자동 생성 필드입니다.
-        /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel CommentCount_Panel;
-
-        /// <summary>
         /// CommentCount_lbl 컨트롤입니다.
         /// </summary>
         /// <remarks>
@@ -229,15 +175,6 @@ namespace NoticeProject
         /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label CommentCount_lbl;
-
-        /// <summary>
-        /// CommentViewPanel 컨트롤입니다.
-        /// </summary>
-        /// <remarks>
-        /// 자동 생성 필드입니다.
-        /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel CommentViewPanel;
 
         /// <summary>
         /// CommentGridView 컨트롤입니다.

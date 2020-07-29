@@ -4,16 +4,15 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
     <!--마스터 폼에서는 type="text/javascript"로 JS 작성 가능-->
-<script type="text/javascript">
+    <script type="text/javascript">
 
 
-</script>
+    </script>
     
-<link rel="stylesheet" href="PageSheet.css" />
+    <link rel="stylesheet" href="PageSheet.css" />
 
-<div id="wrapper" >
 
-    <div id="sidebar">
+    <aside id="sidebar">
         <div id="profile">
             어서오세요! <br /><asp:Label ID="Login_UserID_lbl" runat="server" BorderColor="Blue" Text="" />님, 환영합니다.<br />
             <asp:Button ID="Logout" runat="server" Text="로그아웃" OnClick="Logout_Click" />
@@ -21,22 +20,21 @@
         <br />
         <div style="padding-left:5px;" >
             <asp:TreeView ID="SiteMenu" runat="server" DataSourceID="SiteMapDataSource1"
-                 ShowLines="True" Height="250px" Width="195px"></asp:TreeView>
+                    ShowLines="True" Height="250px" Width="195px"></asp:TreeView>
             <asp:SiteMapDataSource ID="SiteMapDataSource1" runat="server" />
         </div>
-    </div>
+    </aside>
 
     
-    <div id="contents">
+    <section id="board">
     <hr />
-    <center>
-    <asp:Panel ID="HeaderPanel" runat="server" Width="100%">
+    <article>
         <asp:Label ID="BoardIndexText" runat="server" Text="게시물 번호 : " Font-Size="Smaller"/>
         <asp:Label ID="BoardIndex" runat="server" Text="" Font-Size="Smaller" /><br />
         <asp:Label ID="headerlbl" runat="server" Text="" Font-Size="XX-Large" CssClass="chsFont" />
-    </asp:Panel><br />
+    </article><br />
     
-    <asp:Panel ID="ButtonPanel" runat="server" Width="100%" HorizontalAlign="Right">
+    <article>
         <table ID="table1" style="width:100%">
             <tr>
                 <td align="left">
@@ -51,25 +49,20 @@
                 </td>
             </tr>
         </table>
-    </asp:Panel>
+    </article>
 
     <hr style="width:100%;" />
-    <asp:Panel ID="updatePanel" runat="server" Width="100%" HorizontalAlign="Right">
+    <article style="text-align:right;">
         <asp:Button ID="UpdateBtn" runat="server" Text="수정" OnClick="UpdateBtn_Click"/>
-    </asp:Panel>
+    </article>
 
     <!--게시물의 내용이 표시되는 부분-->
-    <asp:Panel ID="ContantsPanel" runat="server" Width="100%" Height="70%" HorizontalAlign="Left" CssClass="panelminimum">
+    <section id="boardMainContents">
         <asp:Label ID="Literal" runat="server" Text=""></asp:Label><br />
-    </asp:Panel>
+    </section>
 
     
     <style type="text/css">
-        .panelminimum{
-            display: block;
-            min-height: 300px;
-            font : 14px Verdana;            
-        }
         .chsFont{
             font-weight: bold;
         }
@@ -78,7 +71,7 @@
 
     <hr style="width:100%; height:2px;" />
 
-    <asp:Panel ID="Panel4" runat="server" Width="100%" Height="10%" HorizontalAlign="Right">
+    <article>
         <table id="table2" style="width:100%">
             <tr>
                 <td align="left">
@@ -89,7 +82,7 @@
                 </td>
             </tr>
         </table>
-    </asp:Panel><br />
+    </article><br />
 
 
     <!--댓글 작성 및 해당 게시물의 댓글이 보여지는 부분-->
@@ -105,13 +98,13 @@
         <asp:Button ID="CommentStore" runat="server" Text="댓글 등록" OnClick="CommentInput_Click" ValidationGroup="vali"/><br />
     </asp:Panel><br /><br />
 
-    <asp:Panel ID="CommentCount_Panel" runat="server" Width="100%" HorizontalAlign="Left">
+    <section style="text-align:left;">
         전체 댓글 수 : <asp:Label ID="CommentCount_lbl" runat="server" Text=""/>
-    </asp:Panel><br />
+    </section><br />
 
     <!--댓글이 보일 GridView와 댓글 수정/삭제 버튼-->
     <!--추가로 댓글의 주소를 별도로 보관하기 위해 TextBox에 Index를 저장하고 TextBox를 보이지 않게함-->
-    <asp:Panel ID="CommentViewPanel" runat="server" Width="100%" HorizontalAlign="Center">
+    <article>
         
         <asp:gridview id="CommentGridView" runat="server" style="width:100%"
             DataSourceID="SqlDataSource" 
@@ -176,11 +169,10 @@
             </SelectParameters>
         </asp:SqlDataSource> 
 
-    </asp:Panel>
+    </article>
     
     <hr style="width:100%;" /><br /><br />
-    </center>
-    </div>
-</div>
+
+    </section>
 
 </asp:Content>

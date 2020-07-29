@@ -158,7 +158,7 @@ namespace NoticeProject
                 else
                 {
                     // 이전 또는 다음 게시판이 있다면 이동 
-                    Response.Redirect("~/Contact.aspx?board_id=" + nextBoardID);
+                    Response.Redirect("~/Contents.aspx?board_id=" + nextBoardID);
                 }
             }
             catch(Exception ex)

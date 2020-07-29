@@ -31,16 +31,6 @@ namespace NoticeProject
             Response.Redirect("~/Default.aspx");
         }
 
-        protected void movepage_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        protected void NoticeGrid_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            
-        }
-
         protected void NewNotice_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/WritePost.aspx?board_id=&previousPage=main");
@@ -124,6 +114,11 @@ namespace NoticeProject
         protected void NoticeGrid_SelectedIndexChanged(object sender, EventArgs e)
         {
             
+        }
+
+        protected void NoticeGrid_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+
         }
 
         protected void privateInfoBtn_ServerClick(object sender, EventArgs e)

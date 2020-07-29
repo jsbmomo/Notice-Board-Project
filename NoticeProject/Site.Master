@@ -7,41 +7,77 @@
 
 </script>
 
-<link href="PageSheet.css" rel="stylesheet"/>
-
 <html lang="ko">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="=device-width, initial-scale=1.0" />
 
+    <link href="PageSheet.css" rel="stylesheet"/>
+
+    <script type="text/javascript" src="Scripts/jquery-3.4.1.min.js"></script>
     <title ><%: Page.Title %> - 내 ASP.NET 애플리케이션</title>
 </head>
 
 
 <body>
-    <form runat="server">
-        <header id="head">
-            웹 프로그래밍
+    <form runat="server" style="text-align:center;">
+        <header class="header">
+            <h1>웹 프로그래밍</h1>
         </header>
 
-        <nav id="menu">
+        <nav class="menu">
             <ul>
-                <li> 여기는 메뉴 </li>
-                <li> 여기는 메뉴2 </li>
-            </ul>
-            <ul>
-                
+                <a href="#"> 여기는 메뉴 </a>
+                <a href="#"> 여기는 메뉴2 </a>
             </ul>
         </nav>
 
-        <section id="main">
+        <style type="text/css">
+            .header{
+                text-align: center;
+                margin: 40px;
+                margin-top: 20px;
+            }
+
+            .menu {
+                display: inline-flex;
+                position: relative;
+                height: 60px;
+                width:98vh;
+                background-color: dimgrey;
+            }
+            .contents {
+                display: inline-flex;
+                position: relative;
+                text-align: center;
+                width: auto;
+                height: auto;
+                padding: 5px;
+                padding-bottom: 4em;
+                background-color: bisque;
+            }
+
+            .footer_ {
+                display: inline-flex;
+                position: relative;
+                font-size: 15px;
+                color: #3d3737;
+                text-align: right;
+                background-color: #ccc;
+                height: 60px;
+                width: 98vh;
+            }
+        </style>
+
+
+        <section class="contents" style="text-align:center;">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
         </section>
             
-        <footer id="footer" >
-            &copy;<B> <%: DateTime.Now.Year %> </B> - 내 ASP.NET 애플리케이션 &nbsp;&nbsp;&nbsp;
+        <footer class="footer_" >
+            &copy;<B> <%: DateTime.Now.Year %> </B> - 내 ASP.NET 애플리케이션 &nbsp;&nbsp;&nbsp;&nbsp;
         </footer>
     
     </form>
