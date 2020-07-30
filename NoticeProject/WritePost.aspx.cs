@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -18,7 +19,12 @@ namespace NoticeProject
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Written.Text = Session["LoginUsers"].ToString();
+            if (!Page.IsPostBack)
+            {
+                Login_UserID_lbl.Text = Session["LoginUsers"].ToString();
+            }
+
+            Written.Value = Session["LoginUsers"].ToString();
 
             // 만약 게시물을 새로 생성하는 것이 아니라 수정하는 것이라면(받은 값이 있다면),
             // Post로 받아온 내용(ID, Index)을 sql문에 작성 후, 해당 내용을 화면(TextBox)에 표시
@@ -41,6 +47,7 @@ namespace NoticeProject
             // 기존의 데이터를 다시 저장하는 과정을 거치게 된다.
             if (!IsPostBack)
             {
+                // 아래 부분은 기존의 게시물 내용을 보여줄 때, 사용되는 부분이다.
                 if (!string.IsNullOrEmpty(board_id))
                 {
                     CreateBoardBtn.Visible = false;
@@ -57,7 +64,7 @@ namespace NoticeProject
 
                         SqlCommand cmd = new SqlCommand(sql, con);
                         cmd.Parameters.AddWithValue("@Index", board_id);
-                        cmd.Parameters.AddWithValue("@User_ID", Written.Text);
+                        cmd.Parameters.AddWithValue("@User_ID", Written.Value);
 
                         SqlDataReader reader = cmd.ExecuteReader();
 
@@ -68,8 +75,8 @@ namespace NoticeProject
                             header = reader["header"] as string; // 가져온 데이터에서 "header"부분만 따로 저장 
                             contents = reader["input_info"] as string; // 가져온 데이터에서 "input_info" 부분만 따로 저장 
                         }
-                        WriteHeader.Text = header;
-                        WriteContents.Text = contents;
+                        WriteHead.Value = header;
+                        WriteContent.Text = contents;
 
                         reader.Close();
                         con.Close();
@@ -91,6 +98,7 @@ namespace NoticeProject
         protected void Logout_Click(object sender, EventArgs e)
         {
             Session.Remove("LoginUsers");
+            Session.Remove("authority");
             Response.Redirect("~/Default.aspx");
         }
 
@@ -116,16 +124,19 @@ namespace NoticeProject
         {
             string sqlConnect = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
             SqlConnection con = new SqlConnection(sqlConnect);
-            string sql = "INSERT INTO Board(user_id, header, input_info) VALUES(@UserID, @Header, @Input_Info)";
-            SqlCommand cmd = new SqlCommand(sql, con);
 
-            cmd.Parameters.AddWithValue("@UserID", Written.Text);
-            cmd.Parameters.AddWithValue("@Header", WriteHeader.Text);
-            cmd.Parameters.AddWithValue("@Input_Info", WriteContents.Text);
+            
+            if (FileUpLoader.HasFile)
+            {
+                FileUpLoad_Excute(con);
+            }
+            else
+            {
+                BoardUpdate_Excute(con);
+            }
+            
 
-            con.Open();
-            cmd.ExecuteNonQuery();
-            con.Close();
+            // 만약 업로드된 파일이 있다면 
 
             ClientScript.RegisterStartupScript(typeof(Page), "alert",
                 "<script> alert('게시물이 작성되었습니다.'); location.href='NoticePage.aspx'; </script>");
@@ -144,10 +155,10 @@ namespace NoticeProject
             {
                 SqlCommand cmd = new SqlCommand(sql, con);
 
-                cmd.Parameters.AddWithValue("@NewContents", WriteContents.Text);
-                cmd.Parameters.AddWithValue("@NewHeader", WriteHeader.Text);
+                cmd.Parameters.AddWithValue("@NewContents", WriteContent.Text);
+                cmd.Parameters.AddWithValue("@NewHeader", WriteHead.Value);
                 cmd.Parameters.AddWithValue("@Index", updateContents_index);
-                cmd.Parameters.AddWithValue("@User_ID", Written.Text);
+                cmd.Parameters.AddWithValue("@User_ID", Written.Value);
 
                 con.Open();
                 cmd.ExecuteNonQuery();
@@ -160,6 +171,51 @@ namespace NoticeProject
             {
                 Response.Write(ex.Message);
             }
+
+        }
+
+
+        // 만약 사용자가 업로드 하려는 파일이 있을 경우 
+        void FileUpLoad_Excute(SqlConnection con)
+        {
+            string filename = Path.GetFileName(FileUpLoader.PostedFile.FileName);
+            string contentType = FileUpLoader.PostedFile.ContentType;
+
+            Stream fs = FileUpLoader.PostedFile.InputStream;
+            BinaryReader br = new BinaryReader(fs);
+            byte[] bytes = br.ReadBytes((Int32)fs.Length);
+
+            //string sql = "INSERT INTO Board(user_id, header, input_info, file, imgsize, fileType) VALUES(@UserID, @Header, @Input_Info, @File, @FileSize, @FileType)";
+            string sql = "INSERT INTO Board(user_id, header, input_info, imgsize, fileType) VALUES(@UserID, @Header, @Input_Info, @FileSize, @FileType)";
+            SqlCommand cmd = new SqlCommand(sql, con);
+
+            cmd.Parameters.AddWithValue("@UserID", Written.Value);
+            cmd.Parameters.AddWithValue("@Header", WriteHead.Value);
+            cmd.Parameters.AddWithValue("@Input_Info", WriteContent.Text);
+            //cmd.Parameters.AddWithValue("@File", filename);
+            cmd.Parameters.AddWithValue("@FileSize", bytes);
+            cmd.Parameters.AddWithValue("@FileType", contentType);
+
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+
+        // 파일 없이 게시판을 업로드 하는 경우 
+        void BoardUpdate_Excute(SqlConnection con)
+        {
+            string sql = "INSERT INTO Board(user_id, header, input_info) VALUES(@UserID, @Header, @Input_Info)";
+
+            SqlCommand cmd = new SqlCommand(sql, con);
+
+            cmd.Parameters.AddWithValue("@UserID", Written.Value);
+            cmd.Parameters.AddWithValue("@Header", WriteHead.Value);
+            cmd.Parameters.AddWithValue("@Input_Info", WriteContent.Text);
+
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
         }
     }
 }

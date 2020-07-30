@@ -11,14 +11,14 @@
     <aside id="sidebar">
         <div id="profile">
             어서오세요! <br /><asp:Label ID="Login_UserID_lbl" runat="server" BorderColor="Blue" Text="" />님, 환영합니다.<br />
-            <input type="submit" name="privateInfoBtn" id="privateInfoBtn" value="개인설정" 
-                runat="server" onserverclick="privateInfoBtn_ServerClick" />
+            <input type="button" name="privateInfoBtn" id="privateInfoBtn" value="개인설정" 
+                OnClick="location.href='PrivateSet.aspx'" />
             <asp:Button ID="Logout" runat="server" Text="로그아웃" OnClick="Logout_Click" />
         </div>
         <br />
         <div style="padding-left:5px; height:initial;" >
             <asp:TreeView ID="SiteMenu" runat="server" DataSourceID="SiteMapDataSource1"
-                    ShowLines="True" Height="250px" Width="195px"></asp:TreeView>
+                    ShowLines="True" Width="195px"></asp:TreeView>
             <asp:SiteMapDataSource ID="SiteMapDataSource1" runat="server" />
         </div>
         <br /><hr style="width:96%;"/>
@@ -123,11 +123,13 @@
         </asp:SqlDataSource> 
     
     
-        <article style="text-align:right">
+        <article style="text-align:right; margin-right:10px;">
             <hr />
-            <asp:Button ID="NewNotice" runat="server" Height="30px" Text="게시물 작성" OnClick="NewNotice_Click" />
+            <input ID="NewNotice" type="button" value="게시물 작성" OnClick="location.href='WritePost.aspx?board_id=&previousPage=main'" />
         </article>
 
+        <asp:Calendar ID="CalenderControl" runat="server" OnSelectionChanged="Calender_SelectionChanged"
+            SelectionMode="Day"></asp:Calendar>
 
         <article style="text-align:left; margin-top:30px;">
             <h1>ASP.NET</h1>

@@ -1,6 +1,7 @@
 ﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="NoticeProject._Default" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Configuration" %>
+<%@ Import Namespace="System.Data" %>
 
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
@@ -18,31 +19,41 @@
 
         protected void MovePage_Click(object sender, EventArgs e) // 로그인 성공 시 페이지 넘김
         {
-            if (LoginCheck(LoginID.Text, LoginPW.Text) > 0)
+            if (LoginCheck(LoginID.Text, LoginPW.Text))
             {
-                Session["LoginUsers"] = LoginID.Text;
-                
                 Response.Redirect("~/NoticePage.aspx");
             }
-            
+
             else
                 Label1.Text = "아이디 또는 비밀번호를 확인해주세요.";
         }
 
-        protected int LoginCheck(string loginID, string loginPW) // 신규 회원가입 시 페이지 넘김 
+        protected bool LoginCheck(string loginID, string loginPW) // 신규 회원가입 시 페이지 넘김 
         {
             SqlConnection con = new SqlConnection(sqlCon);
-            string sql = "SELECT COUNT(user_id) FROM UserInfo WHERE user_id=@UserID AND user_pw=@UserPW";
-            SqlCommand cmd = new SqlCommand(sql, con);
-
-            cmd.Parameters.AddWithValue("@UserID", loginID);
-            cmd.Parameters.AddWithValue("@UserPW", loginPW);
-
+            DataSet dataSet = new DataSet();
             con.Open();
-            int value = (int)cmd.ExecuteScalar(); // 해당 ID, PW가 존재하면, 개수를 반환
+
+            string sql = "SELECT user_id, authority_root FROM UserInfo WHERE user_id='" +
+                          loginID + "' AND user_pw='" + loginPW + "'";
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(sql, con);
+            dataAdapter.Fill(dataSet,"User information");
+
             con.Close();
 
-            return value;
+            // 사용자의 아이디와 
+            if (dataSet.Tables[0].Rows.Count > 0)
+            {
+                Session["LoginUsers"] = dataSet.Tables[0].Rows[0]["user_id"].ToString();
+                Session["authority"] = dataSet.Tables[0].Rows[0]["authority_root"].ToString();
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
 
         protected void FindPassword_Click(object sender, EventArgs e)
@@ -50,10 +61,6 @@
 
         }
 
-        protected void CreateAccount_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("~/NewAccount.aspx");
-        }
     </script>
 
 
@@ -86,9 +93,9 @@
             <asp:Button ID="FindPassword" runat="server"
                 style="height:25px; width:95px;"
                 Text="비밀번호 찾기" OnClick="FindPassword_Click" /> / 
-            <asp:Button ID="CreateAccount" runat="server" 
-                style="height:25px; width:70px;" 
-                Text="회원가입" OnClick="CreateAccount_Click" />
+            <input id="CreateAccount" type="button"
+                style="height: 25px; width: 70px;"
+                value="회원가입" onclick="location.href='NewAccount.aspx'" />
 
             <br /><br /><br />
 

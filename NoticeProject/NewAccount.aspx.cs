@@ -103,11 +103,6 @@ namespace NoticeProject
             
         }
 
-        protected void backToMain_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("~/Default.aspx");
-        }
-
 
         // 드롭박스에서 "년"을 선택했을 경우 
         protected void birthYear_SelectedIndexChanged(object sender, EventArgs e)

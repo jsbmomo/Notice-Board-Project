@@ -51,67 +51,40 @@ namespace NoticeProject
         protected global::System.Web.UI.WebControls.SiteMapDataSource SiteMapDataSource1;
 
         /// <summary>
-        /// WriteTable 컨트롤입니다.
-        /// </summary>
-        /// <remarks>
-        /// 자동 생성 필드입니다.
-        /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Table WriteTable;
-
-        /// <summary>
         /// Written 컨트롤입니다.
         /// </summary>
         /// <remarks>
         /// 자동 생성 필드입니다.
         /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Written;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText Written;
 
         /// <summary>
-        /// WriteHeader 컨트롤입니다.
+        /// WriteHead 컨트롤입니다.
         /// </summary>
         /// <remarks>
         /// 자동 생성 필드입니다.
         /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox WriteHeader;
+        protected global::System.Web.UI.HtmlControls.HtmlInputText WriteHead;
 
         /// <summary>
-        /// WriteContents 컨트롤입니다.
+        /// WriteContent 컨트롤입니다.
         /// </summary>
         /// <remarks>
         /// 자동 생성 필드입니다.
         /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox WriteContents;
+        protected global::System.Web.UI.WebControls.TextBox WriteContent;
 
         /// <summary>
-        /// FileUpLoad 컨트롤입니다.
+        /// FileUpLoader 컨트롤입니다.
         /// </summary>
         /// <remarks>
         /// 자동 생성 필드입니다.
         /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.FileUpload FileUpLoad;
-
-        /// <summary>
-        /// CheckHeader 컨트롤입니다.
-        /// </summary>
-        /// <remarks>
-        /// 자동 생성 필드입니다.
-        /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator CheckHeader;
-
-        /// <summary>
-        /// CheckContents 컨트롤입니다.
-        /// </summary>
-        /// <remarks>
-        /// 자동 생성 필드입니다.
-        /// 수정하려면 디자이너 파일에서 코드 숨김 파일로 필드 선언을 이동하세요.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator CheckContents;
+        protected global::System.Web.UI.WebControls.FileUpload FileUpLoader;
 
         /// <summary>
         /// CancelBtn 컨트롤입니다.

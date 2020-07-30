@@ -18,8 +18,10 @@ namespace NoticeProject
         protected void Logout_Click(object sender, EventArgs e)
         {
             Session.Remove("LoginUsers");
+            Session.Remove("authority");
             Response.Redirect("~/Default.aspx");
         }
+
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -38,7 +40,7 @@ namespace NoticeProject
                 con.Close();
 
 
-                if(dataSet.Tables[0].Rows[0]["authority_root"].ToString() == "1")
+                if(Boolean.Parse(Session["authority"].ToString()))
                 {
                     Grade.Value = "< " + "관리자" + " >";
                 }
@@ -73,7 +75,7 @@ namespace NoticeProject
         protected void UpdateInfo_ServerClick(object sender, EventArgs e)
         {
             SqlConnection con = new SqlConnection(sqlCon);
-            string sqlcmd = "UPDATE UserInfo SET name=@Name, birthday=@Birth, phone=@Phone, email=@Email WHERE user_id=@UserID";
+            string sqlcmd = "UPDATE UserInfo SET name=@Name, brithday=@Birth, phone=@Phone, email=@Email WHERE user_id=@UserID";
             SqlCommand cmd = new SqlCommand(sqlcmd, con);
 
             cmd.Parameters.AddWithValue("@UserID", Session["LoginUsers"].ToString());
@@ -99,7 +101,7 @@ namespace NoticeProject
                 SqlCommand cmd = new SqlCommand(sqlcmd, con);
 
                 cmd.Parameters.AddWithValue("@UserID", Session["LoginUsers"].ToString());
-                cmd.Parameters.AddWithValue("@PassWord", UserName.Value);
+                cmd.Parameters.AddWithValue("@PassWord", NewPassword.Value);
                 
                 con.Open();
                 cmd.ExecuteNonQuery();

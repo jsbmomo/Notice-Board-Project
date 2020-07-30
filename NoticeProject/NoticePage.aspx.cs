@@ -24,17 +24,16 @@ namespace NoticeProject
             
         }
 
+
         protected void Logout_Click(object sender, EventArgs e)
         {
             //System.Web.Security
             Session.Remove("LoginUsers");
+            Session.Remove("authority");
             Response.Redirect("~/Default.aspx");
         }
 
-        protected void NewNotice_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("~/WritePost.aspx?board_id=&previousPage=main");
-        }
+
 
         // 게시물 삭제 버튼을 클릭했을 경우.
         protected void deleteBtn_Click(object sender, EventArgs e)
@@ -43,7 +42,7 @@ namespace NoticeProject
             GridViewRow row = (GridViewRow)btn.NamingContainer; // 
             string written_id = row.Cells[2].Text; // 버튼이 위치한 열에서 ID(string)를 가져옴
 
-            if(written_id == Session["LoginUsers"].ToString())
+            if(Boolean.Parse(Session["authority"].ToString()) || (written_id == Session["LoginUsers"].ToString()))
             {
                 string index = row.Cells[0].Text;
                 int board_index = int.Parse(index);
@@ -121,10 +120,11 @@ namespace NoticeProject
 
         }
 
-        protected void privateInfoBtn_ServerClick(object sender, EventArgs e)
+        protected void Calender_SelectionChanged(object sender, EventArgs e)
         {
-            Response.Redirect("~/PrivateSet.aspx?");
+
         }
+
 
         /* 게시판 정렬 기능 추가시 디자인 페이지에서 "정렬 기능 사용"에 체크해 줌으로
          * 간단하게 사용가능하다. 하지만 해당 기능을 직접 생성하고 싶다면 아래의 소스 코드를 

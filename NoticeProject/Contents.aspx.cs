@@ -17,6 +17,7 @@ namespace NoticeProject
         protected void Logout_Click(object sender, EventArgs e)
         {
             Session.Remove("LoginUsers");
+            Session.Remove("authority");
             Response.Redirect("~/Default.aspx");
         }
 
@@ -76,12 +77,6 @@ namespace NoticeProject
             {
                 Response.Write(ex);
             }   
-        }
-
-        // 메인화면으로 돌아가는 버튼
-        protected void BackButton_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("~/NoticePage.aspx");
         }
 
         // 게시물 내용 수정 시, 게시물 내용 수정 페이지로 이동하는 버튼 

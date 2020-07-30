@@ -21,11 +21,14 @@
         $('.PrintMsg').focusout(function () {
             var pwd1 = $("#NewPassword").val();
             var pwd2 = $("#NewPasswordCheck").val();
+            alert(a);
 
             if (pwd1 != '' && pwd2 == '') {
+                alert(b);
                 null;
             } else if (pwd1 != "" || pwd2 != "") {
                 if (pwd1 == pwd2) {
+                    alert(c);
                     $("#alert-success").css('display', 'inline-block');
                     $("#alert-danger").css('display', 'none');
                 } else {
@@ -66,14 +69,14 @@
         </div>
         <div style="padding-left:5px;" >
             <asp:TreeView ID="SiteMenu" runat="server" DataSourceID="SiteMapDataSource1"
-                    ShowLines="true" Height="250px" Width="195px"></asp:TreeView>
+                    ShowLines="true" Width="195px"></asp:TreeView>
             <asp:SiteMapDataSource ID="SiteMapDataSource1" runat="server" />
         </div>
     </aside>
 
     <!--사용자의 개인정보 출력 뒤, 수정된 값이 있다면 업데이트 수행-->
     <section id="board">
-    <section id="boardMainContents" style="margin-top:200px">
+    <section id="boardMainContents" style="margin-top:200px; text-align:center;">
         <table id="UserInfoTable">
             <tr>
                 <td colspan="2" style="text-align:center;"> 
@@ -91,7 +94,7 @@
             </tr>
             <tr>
                 <td> 생년월일 : </td>
-                <td> <input id="Birthday" type="datetime" runat="server" /> </td>
+                <td> <input id="Birthday" type="datetime" runat="server" value=""/> </td>
             </tr>
             <tr>
                 <td> 아이디 : </td>
@@ -130,7 +133,7 @@
         <table id="PassWordTable" style="display:none;">
             <tr>
                 <td> 현재 비밀번호 입력 : </td>
-                <td> <input ID="NowPassWord" type="text" runat="server"/> </td>
+                <td> <input ID="NowPassWord" type="password" runat="server"/> </td>
             </tr>
             <tr>
                 <td> 새 비밀번호 입력 : </td>
@@ -159,7 +162,7 @@
             </tr>
             <tr>
                 <td style="text-align:right"> <input id="BackBtn" type="button" value="뒤로 가기" onclick="javascript:TableViewChs('ViewMain');" /> </td>
-                <td style="text-align:left"> <input id="NewPassInput" type="button" value="비밀번호 변경" onserverclick="Password_ServerClick" /> </td>
+                <td style="text-align:left"> <input id="NewPassInput" runat="server" type="button" value="비밀번호 변경" onserverclick="Password_ServerClick" /> </td>
             </tr>
         </table>
     </section>
