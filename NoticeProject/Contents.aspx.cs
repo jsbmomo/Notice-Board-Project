@@ -6,13 +6,15 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Data;
+using Microsoft.Ajax.Utilities;
 
 namespace NoticeProject
 {
     public partial class Contact : Page
     {
-        private string board_id = ""; // 게시판의 고유 넘버
         private string conSql = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
+        private string board_id = ""; // 게시판의 고유 넘버
 
         protected void Logout_Click(object sender, EventArgs e)
         {
@@ -29,62 +31,65 @@ namespace NoticeProject
                 Comment_Panel.Visible = false; // 댓글 작성 창을 처음엔 숨김
                 Login_UserID_lbl.Text = Session["LoginUsers"].ToString();
             }
-
+        // https://www.codeproject.com/Articles/308552/Upload-and-Download-Files-to-SQL-Servers-in-ASP-Ne
             board_id = Request.QueryString["board_id"].ToString(); // get 방식
             BoardIndex.Text = board_id; // 보드 주소 저장 = 이를 통해 댓글 GridView에 해당 게시물의 댓글을 가져올 수 있음
             int commentCount = CommentGridView.Rows.Count; // 전체 댓글의 개수 count
             CommentCount_lbl.Text = commentCount.ToString();
 
-            // 댓글의 줄바꿈을 하기위해 사용
-            
+
+            // 댓글의 줄바꿈을 하기위해 사용(작성 예정)
+            DataTable data_Table = new DataTable();
 
             // 게시물에 표현될 제목, 내용 작성
             SqlConnection con = new SqlConnection(conSql);
-            string sql = "SELECT header, user_id, input_info FROM Board WHERE number=@Number";
-            SqlCommand cmd = new SqlCommand(sql, con);
+            con.Open();
 
-            cmd.Parameters.AddWithValue("@Number", board_id);
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "SELECT header, user_id, input_info, fileName, fileType, imgsize FROM Board WHERE number=@Board";
+            cmd.Connection = con;
+            cmd.Parameters.AddWithValue("@Board", board_id);
 
-            try
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            adapter.SelectCommand = cmd;
+            adapter.Fill(data_Table);
+
+            con.Close();
+
+            string board_header = data_Table.Rows[0]["header"].ToString();
+            string board_contents = data_Table.Rows[0]["input_info"].ToString();
+            string board_writter = data_Table.Rows[0]["user_id"].ToString(); // 게시판 작성자의 아이디를 가져옴 
+            string fileName = data_Table.Rows[0]["fileName"].ToString();
+
+            if (!fileName.IsNullOrWhiteSpace())
             {
-                con.Open();
-
-                SqlDataReader reader = cmd.ExecuteReader();
-
-                string board_header = "";
-                string board_contents = "";
-                string board_writter = ""; // 게시판 작성자의 아이디를 가져옴 
-                while (reader.Read())
-                {
-                    board_header = reader["header"].ToString();
-                    board_contents = reader["input_info"].ToString();
-                    board_writter = reader["user_id"].ToString();
-                }
-
-                // 게시물 저장 시, mssql이 개행문자 역시 하나의 문자로만 저장을 한다.
-                // 때문에 줄바꿈 시 사용되는 해당 문자(\r\n)를 <br />로 교체하여 줄바꿈을
-                // 해주었다.
-                string text = board_contents.Replace("\r\n", "<br />");
-
-                Written.Text = board_writter;
-                headerlbl.Text = board_header;
-                Literal.Text = text;
-
-                reader.Close();
-                con.Close();
+                DownLoad_File.Visible = true;
+                FileURL.Visible = true;
+                FileURL.Text = fileName;
             }
-            catch (Exception ex)
+            else
             {
-                Response.Write(ex);
-            }   
+                DownLoad_File.Visible = false;
+                FileURL.Visible = false;
+            }
+
+            // 게시물 저장 시, mssql이 개행문자 역시 하나의 문자로만 저장을 한다.
+            // 때문에 줄바꿈 시 사용되는 해당 문자(\r\n)를 <br />로 교체하여 줄바꿈을
+            // 해주었다.
+            string text = board_contents.Replace("\r\n", "<br />");
+
+            Written.Text = board_writter;
+            headerlbl.Text = board_header;
+            Literal.Text = text;
         }
+
 
         // 게시물 내용 수정 시, 게시물 내용 수정 페이지로 이동하는 버튼 
         protected void UpdateBtn_Click(object sender, EventArgs e)
         {
             // DB에서 작성자의 ID를 가져오고, 세션을 통해
             // 현재 사용자의 ID를 가져와서 비교
-            if (Written.Text == Session["LoginUsers"].ToString()) 
+            if (Written.Text == Session["LoginUsers"].ToString())
             {
                 Response.Redirect("~/WritePost.aspx?&board_id=" + board_id + "&previousPage=Contents");
             }
@@ -93,7 +98,7 @@ namespace NoticeProject
                 ClientScript.RegisterStartupScript(typeof(Page), "alert",
                     "<script> alert('게시판을 수정할 권한이 없습니다.') </script>");
             }
-            
+
         }
 
         // 이전글 버튼을 눌렀을 경우 Previous 문자열을 준다
@@ -112,13 +117,13 @@ namespace NoticeProject
         void SearchContents(string otherContents)
         {
             string sql = "";
-            if(otherContents == "Previous")
+            if (otherContents == "Previous")
             {
                 // 이전 글을 가져오는 쿼리 = 현재 게시물 index 값보다 작은 값 중
                 // 내림차순을 통해 가장 큰 인덱스 값을 가져오는 방식
                 sql = "SELECT TOP 1 number FROM Board WHERE number < @Number ORDER BY number DESC;";
-            } 
-            else if(otherContents == "Next")
+            }
+            else if (otherContents == "Next")
             {
                 // 다음 글을 가져오는 쿼리 = 현재 게시물의 index 값보다 큰 값 중
                 // 가장 작은 인덱스 값을 가져오는 방식
@@ -138,12 +143,12 @@ namespace NoticeProject
                 int nextBoardID = 0;
                 object obj = cmd.ExecuteScalar();
                 nextBoardID = ((obj == null) ? 0 : (int)obj);
- 
+
                 con.Close();
 
                 if (nextBoardID <= 0) // int의 기본값은 0
                 {
-                    if(otherContents == "Previous") // 이전 또는 다음 게시판이 없다면 알림창 발생
+                    if (otherContents == "Previous") // 이전 또는 다음 게시판이 없다면 알림창 발생
                         ClientScript.RegisterStartupScript(typeof(Page), "alert",
                             "<script> alert('이전 게시물이 없습니다.'); </script>");
                     else
@@ -156,7 +161,7 @@ namespace NoticeProject
                     Response.Redirect("~/Contents.aspx?board_id=" + nextBoardID);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Response.Write(ex);
             }
@@ -183,7 +188,7 @@ namespace NoticeProject
 
                 con.Close();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Response.Write(ex);
             }
@@ -194,8 +199,8 @@ namespace NoticeProject
         // 보이게 하게나 또는 숨김(기본적으로 숨김상태)
         protected void CommentHidden_Click(object sender, EventArgs e)
         {
-           
-            if (Comment_Panel.Visible) 
+
+            if (Comment_Panel.Visible)
             {
                 Comment_Panel.Visible = false;
             }
@@ -252,7 +257,7 @@ namespace NoticeProject
             }
             else
             {
-                ClientScript.RegisterStartupScript(typeof(Page),"alert",
+                ClientScript.RegisterStartupScript(typeof(Page), "alert",
                     "<script> alert('삭제할 권한이 없습니다.') </script>");
             }
         }
@@ -328,7 +333,7 @@ namespace NoticeProject
             {
                 Response.Write(ex);
             }
-            
+
         }
 
 
@@ -352,5 +357,56 @@ namespace NoticeProject
             gridRow.Cells[0].FindControl("CancelUpdateBtn").Visible = false;
         }
 
+
+        // 파일 다운로드를 위한 버튼
+        protected void DownLoadFile_ServerClick(object sender, EventArgs e)
+        {
+            DataTable data_Tabel = new DataTable();
+
+            SqlConnection con = new SqlConnection(conSql);
+            con.Open();
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "SELECT header, user_id, input_info, fileName, fileType, imgsize FROM Board WHERE number=@Board";
+            cmd.Connection = con;
+            cmd.CommandType = CommandType.Text;
+            cmd.Parameters.AddWithValue("@Board", board_id);
+
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            adapter.SelectCommand = cmd;
+            adapter.Fill(data_Tabel);
+
+            con.Close();
+
+
+            DataRow data = data_Tabel.Rows[0];
+
+            string name = (string)data["fileName"];
+            string contentType = (string)data["fileType"];
+            Byte[] fileData = (Byte[])data["imgsize"];
+
+            Response.AddHeader("Content-type", contentType);
+            Response.AddHeader("Content-Disposition", "attachment; filename=" + name);
+            Response.BinaryWrite(fileData);
+            Response.Flush();
+            Response.End();
+        }
+
+
+        /*
+        // SQL에서 데이터를 받아오는 함수
+        public static DataTable DataReturnTable(string sqlCmd, int parameter)
+        {
+            
+
+            return dataTable;
+        }
+
+
+        private static SqlConnection GetConnectionString()
+        {
+            SqlConnection sqlCon = new SqlConnection(ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString);
+            return sqlCon;
+        }*/
     }
 }

@@ -5,7 +5,26 @@
 
     <!--마스터 폼에서는 type="text/javascript"로 JS 작성 가능-->
     <script type="text/javascript">
+        /*
+        $(document).on("click", "#Password", function () {
+            TableViewChs("ViewPass");
+        });
 
+        function TableViewChs(isResult) {
+            if (isResult == "ViewPass") {
+                $("#UserInfoTable").css("display", "none");
+                $("#PassWordTable").css("display", "");
+
+            } else {
+                $("#UserInfoTable").css("display", "");
+                $("#PassWordTable").css("display", "none");
+
+            }
+        }*/
+
+        function DownLoadFile_ServerClick() {
+            alert(1);
+        }
 
     </script>
     
@@ -36,6 +55,7 @@
             <asp:Label ID="headerlbl" runat="server" Text="" Font-Size="XX-Large" CssClass="chsFont" />
         </article><br />
     
+        <!--작성자명 및 이전 게시물 / 다음 게시물-->
         <article>
             <table ID="table1" style="width:100%">
                 <tr>
@@ -53,13 +73,21 @@
             </table>
         </article>
 
+
+        <!--게시물 수정 버튼 및 다운로드 파일-->
         <hr style="width:100%;" />
         <article style="text-align:right;">
-            <asp:Button ID="UpdateBtn" runat="server" Text="수정" OnClick="UpdateBtn_Click"/>
+            <input type="button" name="UpdateBtn" runat="server" value="게시물 내용 수정" 
+                OnServerClick="UpdateBtn_Click"/><br />
+            <asp:Label ID="FileURL" runat="server" Text="" Visible="false"></asp:Label>
+            <input type="button" id="DownLoad_File" runat="server" value="다운로드" 
+                onserverclick="DownLoadFile_ServerClick" visible="false" />
         </article>
 
+       
+
         <!--게시물의 내용이 표시되는 부분-->
-        <section id="boardMainContents">
+        <section id="boardMainContents" style="text-align:left;">
             <asp:Label ID="Literal" runat="server" Text=""></asp:Label><br />
         </section>
 
@@ -176,5 +204,6 @@
         <hr style="width:100%;" /><br /><br />
 
     </section>
+
 
 </asp:Content>

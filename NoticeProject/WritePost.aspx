@@ -83,7 +83,7 @@
 
         <div>
             <div>
-                <br /><label> 이미지 첨부 </label><br />
+                <br /><label> 파일 첨부 </label><br />
                 <asp:FileUpload ID="FileUpLoader" runat="server" Width="500" />
             </div>
         </div>

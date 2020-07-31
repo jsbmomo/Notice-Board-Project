@@ -185,16 +185,17 @@ namespace NoticeProject
             BinaryReader br = new BinaryReader(fs);
             byte[] bytes = br.ReadBytes((Int32)fs.Length);
 
-            //string sql = "INSERT INTO Board(user_id, header, input_info, file, imgsize, fileType) VALUES(@UserID, @Header, @Input_Info, @File, @FileSize, @FileType)";
-            string sql = "INSERT INTO Board(user_id, header, input_info, imgsize, fileType) VALUES(@UserID, @Header, @Input_Info, @FileSize, @FileType)";
+            string sql = "INSERT INTO Board(user_id, header, input_info, fileName, imgsize, fileType, fileExist) VALUES(@UserID, @Header, @Input_Info, @File, @FileSize, @FileType, @FileExist)";
+            //string sql = "INSERT INTO Board(user_id, header, input_info, imgsize, fileType) VALUES(@UserID, @Header, @Input_Info, @FileSize, @FileType)";
             SqlCommand cmd = new SqlCommand(sql, con);
 
             cmd.Parameters.AddWithValue("@UserID", Written.Value);
             cmd.Parameters.AddWithValue("@Header", WriteHead.Value);
             cmd.Parameters.AddWithValue("@Input_Info", WriteContent.Text);
-            //cmd.Parameters.AddWithValue("@File", filename);
+            cmd.Parameters.AddWithValue("@File", filename);
             cmd.Parameters.AddWithValue("@FileSize", bytes);
             cmd.Parameters.AddWithValue("@FileType", contentType);
+            cmd.Parameters.AddWithValue("@FileExist", contentType); // 파일의 존재여부를 판단하는 bit형 
 
             con.Open();
             cmd.ExecuteNonQuery();

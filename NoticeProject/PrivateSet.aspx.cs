@@ -41,13 +41,10 @@ namespace NoticeProject
 
 
                 if(Boolean.Parse(Session["authority"].ToString()))
-                {
                     Grade.Value = "< " + "관리자" + " >";
-                }
-                else
-                {
+                else 
                     Grade.Value = "< " + "일반 회원" + " >";
-                }
+
 
                 UserName.Value = dataSet.Tables[0].Rows[0]["name"].ToString();
                 UserID.Value = dataSet.Tables[0].Rows[0]["user_id"].ToString();

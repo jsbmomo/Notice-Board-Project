@@ -120,11 +120,6 @@ namespace NoticeProject
 
         }
 
-        protected void Calender_SelectionChanged(object sender, EventArgs e)
-        {
-
-        }
-
 
         /* 게시판 정렬 기능 추가시 디자인 페이지에서 "정렬 기능 사용"에 체크해 줌으로
          * 간단하게 사용가능하다. 하지만 해당 기능을 직접 생성하고 싶다면 아래의 소스 코드를 

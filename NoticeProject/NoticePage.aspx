@@ -2,10 +2,28 @@
 
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server" >
+
     <script runat="server">
         
     </script>
-
+    
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+    <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
+    <link rel="stylesheet" href="/resources/demos/style.css" />
+    <script>
+        $(function () {
+            // datepicker에는 아래와 같이 기본적으로 설정할 수 있는 옵션들이 있다.
+            $("#datepicker").datepicker({
+                dateFormat: 'yymmdd',
+                monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+                changeMonth: true, //월변경가능
+                changeYear: true, //년변경가능
+                showMonthAfterYear: true, //년 뒤에 월 표시
+            });
+        });
+    </script>
     
     
     <aside id="sidebar">
@@ -32,6 +50,7 @@
                 <h2>게시판 목록</h2>
             <hr />
         </article>
+
         <!--해당 GridView는 메인 화면에 표시될 게시판에 대한 설정이다.-->
         <!--DataNavigateUrlFields는 gridview 내에 있는 DataField의 값을 가져오고 -->
         <!--HyperLink에 DataNavigateUrlFormatString을 통해 해당 값을 넣어준다.-->
@@ -123,19 +142,23 @@
         </asp:SqlDataSource> 
     
     
-        <article style="text-align:right; margin-right:10px;">
-            <hr />
+        <article style="text-align:right; margin: 5px 10px;">
             <input ID="NewNotice" type="button" value="게시물 작성" OnClick="location.href='WritePost.aspx?board_id=&previousPage=main'" />
+            <hr />
         </article>
 
-        <asp:Calendar ID="CalenderControl" runat="server" OnSelectionChanged="Calender_SelectionChanged"
-            SelectionMode="Day"></asp:Calendar>
+        <article style="display:flex; margin-top:50px">
+            <article style="width:50%;">
+                <div id="datepicker"></div>
+            </article>
 
-        <article style="text-align:left; margin-top:30px;">
-            <h1>ASP.NET</h1>
-            <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
-            <p><a href="http://www.asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+            <article style="text-align:left; margin-top:5px; margin-left:15px;">
+                <p style="font: 23px; font-weight: bold">ASP.NET</p>
+                <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
+                <p><a href="http://www.asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+            </article>
         </article>
+        <br /><hr />
 
     </section>
     
