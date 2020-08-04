@@ -8,14 +8,13 @@ using System.Web.UI.WebControls;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using NoticeProject.DBConnection;
 
 namespace NoticeProject
 {
     public partial class WritePost : System.Web.UI.Page
     {
         private static string updateContents_index = "";// Post로 수정될 게시물의 인덱스를 받음 
-
-        private string sqlCon = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -43,7 +42,7 @@ namespace NoticeProject
             }
 
             // !IsPostBack를 하지 않을 경우, 버튼을 누르는 등 이벤트가 발생될 때마다
-            // DB에서 새롭게 데이터를 불러오게 되어, 수정한 데이터를 저장하는 것이 아니라
+            // DB에서 새롭게 데이터를 불러오게 되며, 이를 통해 수정한 데이터를 저장하는 것이 아니라
             // 기존의 데이터를 다시 저장하는 과정을 거치게 된다.
             if (!IsPostBack)
             {
@@ -52,39 +51,27 @@ namespace NoticeProject
                 {
                     CreateBoardBtn.Visible = false;
                     UpdateContentsBtn.Visible = true;
-
-                    SqlConnection con = new SqlConnection(sqlCon);
-                    string sql = "SELECT header, input_info FROM Board WHERE number=@Index and user_id=@User_ID";
-
                     updateContents_index = board_id;
 
-                    try
-                    {
-                        con.Open();
+                    string sql = @"SELECT
+                                        [header],
+                                        [input_info]
+                                   FROM dbo.Board
+                                   WHERE
+                                        [number] = @1
+                                   AND
+                                        [user_id] = @2";
+                    MSConnection connection = new MSConnection();
+                    DataTable datatable = connection.GetDataTable(sql, board_id, Written.Value);
+                    connection.CloseDB();
 
-                        SqlCommand cmd = new SqlCommand(sql, con);
-                        cmd.Parameters.AddWithValue("@Index", board_id);
-                        cmd.Parameters.AddWithValue("@User_ID", Written.Value);
+                    string header = ""; // DB에서 header의 내용을 저장
+                    string contents = ""; // DB에서 input_info의 내용을 저장
+                    header = datatable.Rows[0]["header"].ToString(); // 가져온 데이터에서 "header"부분만 따로 저장 
+                    contents = datatable.Rows[0]["input_info"].ToString(); // 가져온 데이터에서 "input_info" 부분만 따로 저장 
+                    WriteHead.Value = header;
+                    WriteContent.Text = contents;
 
-                        SqlDataReader reader = cmd.ExecuteReader();
-
-                        string header = ""; // DB에서 header의 내용을 저장
-                        string contents = ""; // DB에서 input_info의 내용을 저장
-                        while (reader.Read())
-                        {
-                            header = reader["header"] as string; // 가져온 데이터에서 "header"부분만 따로 저장 
-                            contents = reader["input_info"] as string; // 가져온 데이터에서 "input_info" 부분만 따로 저장 
-                        }
-                        WriteHead.Value = header;
-                        WriteContent.Text = contents;
-
-                        reader.Close();
-                        con.Close();
-                    }
-                    catch (Exception ex)
-                    {
-                        Response.Write(ex.Message);
-                    }
                 }
                 else
                 {
@@ -101,6 +88,7 @@ namespace NoticeProject
             Session.Remove("authority");
             Response.Redirect("~/Default.aspx");
         }
+
 
         protected void CancelBtn_Click(object sender, EventArgs e)
         {
@@ -122,61 +110,48 @@ namespace NoticeProject
         // 만약 새로 게시물을 생성할 경우.
         protected void CreateBoardBtn_Click(object sender, EventArgs e)
         {
-            string sqlConnect = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
-            SqlConnection con = new SqlConnection(sqlConnect);
-
-            
             if (FileUpLoader.HasFile)
             {
-                FileUpLoad_Excute(con);
+                FileUpLoad_Excute();
             }
             else
             {
-                BoardUpdate_Excute(con);
+                BoardUpdate_Excute();
             }
             
-
             // 만약 업로드된 파일이 있다면 
-
             ClientScript.RegisterStartupScript(typeof(Page), "alert",
                 "<script> alert('게시물이 작성되었습니다.'); location.href='NoticePage.aspx'; </script>");
-
         }
 
 
         // 만약 기존의 내용을 수정할 경우 
         protected void UpdateContentsBtn_Click(object sender, EventArgs e)
         {
-            string sqlCon = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
-            SqlConnection con = new SqlConnection(sqlCon);
-            string sql = "UPDATE Board SET input_info=@NewContents, header=@NewHeader WHERE number=@Index and user_id=@User_ID";
+            string sql = @"UPDATE Board SET 
+                                [input_info] = @1,
+                                [header] = @2
+                           WHERE
+                                [number] = @3
+                           AND
+                                [user_id] = @4";
+            List<object> param = new List<object>();
+            param.Add(WriteContent.Text);
+            param.Add(WriteHead.Value);
+            param.Add(updateContents_index);
+            param.Add(Written.Value);
 
-            try
-            {
-                SqlCommand cmd = new SqlCommand(sql, con);
+            MSConnection connection = new MSConnection();
+            connection.ExcuteQuery(sql, param);
+            connection.CloseDB();
 
-                cmd.Parameters.AddWithValue("@NewContents", WriteContent.Text);
-                cmd.Parameters.AddWithValue("@NewHeader", WriteHead.Value);
-                cmd.Parameters.AddWithValue("@Index", updateContents_index);
-                cmd.Parameters.AddWithValue("@User_ID", Written.Value);
-
-                con.Open();
-                cmd.ExecuteNonQuery();
-                con.Close();
-
-                ClientScript.RegisterStartupScript(typeof(Page), "alert",
-                    "<script> alert('정상적으로 변경되었습니다.'); </script>");
-            }
-            catch (Exception ex)
-            {
-                Response.Write(ex.Message);
-            }
-
+            ClientScript.RegisterStartupScript(typeof(Page), "alert",
+                "<script> alert('정상적으로 변경되었습니다.'); </script>");
         }
 
 
         // 만약 사용자가 업로드 하려는 파일이 있을 경우 
-        void FileUpLoad_Excute(SqlConnection con)
+        void FileUpLoad_Excute()
         {
             string filename = Path.GetFileName(FileUpLoader.PostedFile.FileName);
             string contentType = FileUpLoader.PostedFile.ContentType;
@@ -185,39 +160,59 @@ namespace NoticeProject
             BinaryReader br = new BinaryReader(fs);
             byte[] bytes = br.ReadBytes((Int32)fs.Length);
 
-            string sql = "INSERT INTO Board(user_id, header, input_info, fileName, imgsize, fileType, fileExist) VALUES(@UserID, @Header, @Input_Info, @File, @FileSize, @FileType, @FileExist)";
-            //string sql = "INSERT INTO Board(user_id, header, input_info, imgsize, fileType) VALUES(@UserID, @Header, @Input_Info, @FileSize, @FileType)";
-            SqlCommand cmd = new SqlCommand(sql, con);
+            string sql = @"INSERT INTO Board(
+                                [user_id],
+                                [header],
+                                [input_info],
+                                [fileName],
+                                [imgsize],
+                                [fileType]
+                            )
+                           VALUES(
+                                @1,
+                                @2,
+                                @3,
+                                @4,
+                                @5,
+                                @6
+                            )";
+            List<object> param = new List<object>();
+            param.Add(Written.Value);
+            param.Add(WriteHead.Value);
+            param.Add(WriteContent.Text);
+            param.Add(filename);
+            param.Add(bytes);
+            param.Add(contentType);
 
-            cmd.Parameters.AddWithValue("@UserID", Written.Value);
-            cmd.Parameters.AddWithValue("@Header", WriteHead.Value);
-            cmd.Parameters.AddWithValue("@Input_Info", WriteContent.Text);
-            cmd.Parameters.AddWithValue("@File", filename);
-            cmd.Parameters.AddWithValue("@FileSize", bytes);
-            cmd.Parameters.AddWithValue("@FileType", contentType);
-            cmd.Parameters.AddWithValue("@FileExist", contentType); // 파일의 존재여부를 판단하는 bit형 
-
-            con.Open();
-            cmd.ExecuteNonQuery();
-            con.Close();
+            // cmd.Parameters.AddWithValue("@FileExist", contentType); // 파일의 존재여부를 판단하는 bit형 
+            MSConnection connection = new MSConnection();
+            connection.ExcuteQuery(sql, param);
+            connection.CloseDB();
         }
 
 
         // 파일 없이 게시판을 업로드 하는 경우 
-        void BoardUpdate_Excute(SqlConnection con)
+        void BoardUpdate_Excute()
         {
-            string sql = "INSERT INTO Board(user_id, header, input_info) VALUES(@UserID, @Header, @Input_Info)";
+            string sql = @"INSERT INTO Board(
+                                [user_id],
+                                [header],
+                                [input_info]
+                            )
+                           VALUES(
+                                @1,
+                                @2,
+                                @3
+                            )";
+            List<object> param = new List<object>();
+            param.Add(Written.Value);
+            param.Add(WriteHead.Value);
+            param.Add(WriteContent.Text);
 
-            SqlCommand cmd = new SqlCommand(sql, con);
-
-            cmd.Parameters.AddWithValue("@UserID", Written.Value);
-            cmd.Parameters.AddWithValue("@Header", WriteHead.Value);
-            cmd.Parameters.AddWithValue("@Input_Info", WriteContent.Text);
-
-            con.Open();
-            cmd.ExecuteNonQuery();
-            con.Close();
+            MSConnection connection = new MSConnection();
+            connection.ExcuteQuery(sql, param);
+            connection.CloseDB();
         }
     }
 }
-    
+   

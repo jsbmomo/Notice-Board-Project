@@ -182,6 +182,7 @@
     <Compile Include="Contents.aspx.designer.cs">
       <DependentUpon>Contents.aspx</DependentUpon>
     </Compile>
+    <Compile Include="DBConnection\MSConnection.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

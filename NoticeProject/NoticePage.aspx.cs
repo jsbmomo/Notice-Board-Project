@@ -1,10 +1,12 @@
-﻿using System;
+﻿using NoticeProject.DBConnection;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -13,15 +15,12 @@ namespace NoticeProject
 {
     public partial class LoginPage : System.Web.UI.Page
     {
-        private string sqlCon = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
             {
                 Login_UserID_lbl.Text = Session["LoginUsers"].ToString();
             }
-            
         }
 
 
@@ -32,7 +31,6 @@ namespace NoticeProject
             Session.Remove("authority");
             Response.Redirect("~/Default.aspx");
         }
-
 
 
         // 게시물 삭제 버튼을 클릭했을 경우.
@@ -47,29 +45,24 @@ namespace NoticeProject
                 string index = row.Cells[0].Text;
                 int board_index = int.Parse(index);
 
-                try
-                {
-                    //Response.Write($"{written_id} == {Session["LoginUsers"].ToString()} ID가 일치함을 확인!");
-                    SqlConnection con = new SqlConnection(sqlCon);
-                    string sql = "DELETE FROM dbo.Board WHERE user_id=@UserID AND number=@Number";
-                    SqlCommand cmd = new SqlCommand(sql, con);
+                //Response.Write($"{written_id} == {Session["LoginUsers"].ToString()} ID가 일치함을 확인!");
+                string sql = @"DELETE FROM dbo.Board 
+                               WHERE 
+                                    [user_id] = @1
+                               AND 
+                                    [number] = @2";
+                List<object> param = new List<object>();
+                param.Add(written_id);
+                param.Add(board_index);
 
-                    cmd.Parameters.AddWithValue("@UserID", written_id);
-                    cmd.Parameters.AddWithValue("@Number", board_index);
+                MSConnection connection = new MSConnection();
+                connection.ExcuteQuery(sql, param);
+                connection.CloseDB();
 
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    con.Close();
+                ClientScript.RegisterStartupScript(typeof(Page), "alert",
+                    "<script>alert('성공적으로 게시물을 삭제했습니다.'); </script>");
 
-                    ClientScript.RegisterStartupScript(typeof(Page), "alert",
-                        "<script>alert('성공적으로 게시물을 삭제했습니다.'); </script>");
-
-                    NoticeGrid.DataBind(); // grid view를 새로 고침  
-                }
-                catch(Exception ex)
-                {
-                    Response.Write(ex.Message);
-                }
+                NoticeGrid.DataBind(); // grid view를 새로 고침  
             }
             else
             {
@@ -77,7 +70,6 @@ namespace NoticeProject
                 ClientScript.RegisterStartupScript(typeof(Page), "alert",
                     "<script>alert('해당 게시물을 삭제할 권한이 없습니다.') </script>");
             }
-            
         }
 
 
@@ -109,6 +101,30 @@ namespace NoticeProject
                     "<script>alert('해당 게시물을 수정할 권한이 없습니다.') </script>");
             }
         }
+
+        [WebMethod] // ajax와 asp.net 코드가 통신을 하려면 반드시 붙여야한다.
+        public static string LoadList(string boardID) {
+
+            MSConnection connection = new MSConnection();
+            DataTable dataTable = new DataTable();
+
+            string sql = @"SELECT 
+                                [number],
+                                [header],
+                                [user_id],
+                                [input_date]
+                           FROM
+                                dbo.Board
+                           ORDER BY 
+                                number DESC";
+            
+            dataTable = connection.GetDataTable(sql);
+            connection.CloseDB();
+
+            return connection.GetJson(dataTable);
+        }
+
+
 
         protected void NoticeGrid_SelectedIndexChanged(object sender, EventArgs e)
         {

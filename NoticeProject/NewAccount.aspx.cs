@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NoticeProject.DBConnection;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -12,9 +13,7 @@ namespace NoticeProject
 {
     public partial class NewAccout : System.Web.UI.Page
     {
-        private static string sqlConnect = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
         private static Boolean ID_Valid;
-        DataTable dataTable = new DataTable();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -22,20 +21,18 @@ namespace NoticeProject
             {
                 DropBoxBinding();
             } 
-            
         }
 
         protected void compareID_Click(object sender, EventArgs e)
         {
-            SqlConnection con = new SqlConnection(sqlConnect);
-            string sql = "SELECT COUNT(user_id) FROM UserInfo WHERE user_id=@UserID";
-            SqlCommand cmd = new SqlCommand(sql, con);
-
-            cmd.Parameters.AddWithValue("@UserID", LoginID.Text);
-
-            con.Open();
-            int value = (int)cmd.ExecuteScalar();
-            con.Close();
+            string sql = @"SELECT COUNT
+                                ([user_id])
+                           FROM dbo.UserInfo 
+                           WHERE 
+                                [user_id]='" + LoginID.Text + "'";
+            MSConnection connection = new MSConnection();
+            int value = connection.ScalarExecute(sql);
+            connection.CloseDB();
 
             if (value <= 0) ID_Valid = true; // 사용가능함
             else ID_Valid = false;
@@ -60,40 +57,41 @@ namespace NoticeProject
         {
             if (ID_Valid)
             {
-
                 string email_data = eMail.Text + '@' + webSiteList.Text;
                 string birthday_data = birthYear.Text + '-' + birthMonth.Text + '-' + birthDay.Text;
                 string phone_data = FrontNumber.Text + '-' + PhoneNumber.Text;
 
-                SqlConnection con = new SqlConnection(sqlConnect);
-                string sql = "INSERT INTO UserInfo(user_id, user_pw, name, brithday, email, phone) VALUES (@User_ID, @Password, @Name, @Birth, @Email, @Phone)";
-                SqlCommand cmd = new SqlCommand(sql, con);
-
                 // @User_ID, @Password, @Name, @Birth, @Email, @Phone
-                cmd.Parameters.AddWithValue("@User_ID", LoginID.Text);
-                cmd.Parameters.AddWithValue("@Password", LoginPW.Text);
-                cmd.Parameters.AddWithValue("@Name", userName.Text);
-                cmd.Parameters.AddWithValue("@Email", email_data);
-                cmd.Parameters.AddWithValue("@Birth", birthday_data);
-                cmd.Parameters.AddWithValue("@Phone", phone_data);
+                string sql = @"INSERT INTO UserInfo(
+                                    [user_id], 
+                                    [user_pw], 
+                                    [name], 
+                                    [brithday],
+                                    [email], 
+                                    [phone]
+                               ) 
+                               VALUES (
+                                    @1,
+                                    @2,
+                                    @3,
+                                    @4,
+                                    @5,
+                                    @6
+                               )";
+                List<object> param = new List<object>();
+                param.Add(LoginID.Text);
+                param.Add(LoginPW.Text);
+                param.Add(userName.Text);
+                param.Add(email_data);
+                param.Add(birthday_data);
+                param.Add(phone_data);
 
-                con.Open();
-
-                try
-                {
-                    cmd.ExecuteNonQuery();
-
-                    ClientScript.RegisterStartupScript(typeof(Page), "alert",
-                            "<script>alert('계정이 생성되었습니다.');</script>");
-
-                }
-                catch (Exception ex)
-                {
-                    Response.Write(ex);
-                }
-
-                con.Close();
-                //Response.Redirect(Request.Url.ToString(), true);
+                MSConnection connection = new MSConnection();
+                connection.ExcuteQuery(sql, param);
+                connection.CloseDB();
+   
+                ClientScript.RegisterStartupScript(typeof(Page), "alert",
+                        "<script>alert('계정이 생성되었습니다.');</script>");
             }
             else
             {

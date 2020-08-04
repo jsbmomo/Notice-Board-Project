@@ -8,12 +8,12 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Data;
 using Microsoft.Ajax.Utilities;
+using NoticeProject.DBConnection;
 
 namespace NoticeProject
 {
     public partial class Contact : Page
     {
-        private string conSql = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
         private string board_id = ""; // 게시판의 고유 넘버
 
         protected void Logout_Click(object sender, EventArgs e)
@@ -31,30 +31,31 @@ namespace NoticeProject
                 Comment_Panel.Visible = false; // 댓글 작성 창을 처음엔 숨김
                 Login_UserID_lbl.Text = Session["LoginUsers"].ToString();
             }
-        // https://www.codeproject.com/Articles/308552/Upload-and-Download-Files-to-SQL-Servers-in-ASP-Ne
+
+            // https://www.codeproject.com/Articles/308552/Upload-and-Download-Files-to-SQL-Servers-in-ASP-Ne
             board_id = Request.QueryString["board_id"].ToString(); // get 방식
             BoardIndex.Text = board_id; // 보드 주소 저장 = 이를 통해 댓글 GridView에 해당 게시물의 댓글을 가져올 수 있음
+            
             int commentCount = CommentGridView.Rows.Count; // 전체 댓글의 개수 count
             CommentCount_lbl.Text = commentCount.ToString();
 
-
             // 댓글의 줄바꿈을 하기위해 사용(작성 예정)
-            DataTable data_Table = new DataTable();
-
             // 게시물에 표현될 제목, 내용 작성
-            SqlConnection con = new SqlConnection(conSql);
-            con.Open();
+            string sql = @"SELECT 
+                                [header], 
+                                [user_id],
+                                [input_info], 
+                                [fileName], 
+                                [fileType], 
+                                [imgsize]
+                           FROM 
+                                dbo.Board 
+                           WHERE 
+                                number=@1";
 
-            SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "SELECT header, user_id, input_info, fileName, fileType, imgsize FROM Board WHERE number=@Board";
-            cmd.Connection = con;
-            cmd.Parameters.AddWithValue("@Board", board_id);
-
-            SqlDataAdapter adapter = new SqlDataAdapter();
-            adapter.SelectCommand = cmd;
-            adapter.Fill(data_Table);
-
-            con.Close();
+            MSConnection connection = new MSConnection();
+            DataTable data_Table = connection.GetDataTable(sql, board_id);
+            connection.CloseDB();
 
             string board_header = data_Table.Rows[0]["header"].ToString();
             string board_contents = data_Table.Rows[0]["input_info"].ToString();
@@ -121,77 +122,61 @@ namespace NoticeProject
             {
                 // 이전 글을 가져오는 쿼리 = 현재 게시물 index 값보다 작은 값 중
                 // 내림차순을 통해 가장 큰 인덱스 값을 가져오는 방식
-                sql = "SELECT TOP 1 number FROM Board WHERE number < @Number ORDER BY number DESC;";
+                sql = "SELECT TOP 1 number FROM Board WHERE number < " + board_id + " ORDER BY number DESC;";
             }
             else if (otherContents == "Next")
             {
                 // 다음 글을 가져오는 쿼리 = 현재 게시물의 index 값보다 큰 값 중
                 // 가장 작은 인덱스 값을 가져오는 방식
-                sql = "SELECT TOP 1 number FROM Board WHERE number > @Number ORDER BY number;";
+                sql = "SELECT TOP 1 number FROM Board WHERE number > " + board_id + " ORDER BY number;";
             }
 
-            SqlConnection con = new SqlConnection(conSql);
 
-            try
+            MSConnection connection = new MSConnection();
+            int nextBoardID = connection.ScalarExecute(sql);
+            connection.CloseDB();
+
+            if (nextBoardID <= 0)
             {
-                con.Open();
-
-                SqlCommand cmd = new SqlCommand(sql, con);
-                cmd.Parameters.AddWithValue("@Number", board_id); // 현재 게시판의 Index
-
-                // MSSQL DB에서는 number가 int로 저장되어 있음
-                int nextBoardID = 0;
-                object obj = cmd.ExecuteScalar();
-                nextBoardID = ((obj == null) ? 0 : (int)obj);
-
-                con.Close();
-
-                if (nextBoardID <= 0) // int의 기본값은 0
-                {
-                    if (otherContents == "Previous") // 이전 또는 다음 게시판이 없다면 알림창 발생
-                        ClientScript.RegisterStartupScript(typeof(Page), "alert",
-                            "<script> alert('이전 게시물이 없습니다.'); </script>");
-                    else
-                        ClientScript.RegisterStartupScript(typeof(Page), "alert",
-                            "<script> alert('다음 게시물이 없습니다.'); </script>");
-                }
+                if (otherContents == "Previous") // 이전 또는 다음 게시판이 없다면 알림창 발생
+                    ClientScript.RegisterStartupScript(typeof(Page), "alert",
+                        "<script> alert('이전 게시물이 없습니다.'); </script>");
                 else
-                {
-                    // 이전 또는 다음 게시판이 있다면 이동 
-                    Response.Redirect("~/Contents.aspx?board_id=" + nextBoardID);
-                }
+                    ClientScript.RegisterStartupScript(typeof(Page), "alert",
+                        "<script> alert('다음 게시물이 없습니다.'); </script>");
             }
-            catch (Exception ex)
+            else
             {
-                Response.Write(ex);
+                // 이전 또는 다음 게시판이 있다면 이동 
+                Response.Redirect("~/Contents.aspx?board_id=" + nextBoardID);
             }
         }
+
 
         // 댓글 작성 후, 등록할때.
         protected void CommentInput_Click(object sender, EventArgs e)
         {
-            SqlConnection con = new SqlConnection(conSql);
-            string sql = "INSERT INTO Comment(board_number, comment, user_id) VALUES(@BoardNumber, @Comment, @Written)";
-            SqlCommand cmd = new SqlCommand(sql, con);
+            string sql = @"INSERT INTO dbo.Comment(
+                                [board_number], 
+                                [comment], 
+                                [user_id]
+                           )
+                           VALUES(
+                                @1,
+                                @2,
+                                @3
+                           )";
+            List<object> param = new List<object>();
+            param.Add(board_id);
+            param.Add(Comment.Text);
+            param.Add(Session["LoginUsers"].ToString());
 
-            cmd.Parameters.AddWithValue("@BoardNumber", board_id);
-            cmd.Parameters.AddWithValue("@Comment", Comment.Text);
-            cmd.Parameters.AddWithValue("@Written", Session["LoginUsers"].ToString());
+            MSConnection connection = new MSConnection();
+            connection.ExcuteQuery(sql, param);
+            connection.CloseDB();
 
-            try
-            {
-                con.Open();
-                cmd.ExecuteNonQuery();
-
-                CommentGridView.DataBind();
-                Comment.Text = string.Empty; // 기존 TextBox의 내용을 모두 지움 
-
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                Response.Write(ex);
-            }
+            CommentGridView.DataBind();
+            Comment.Text = string.Empty; // 기존 TextBox의 내용을 모두 지움 
         }
 
 
@@ -199,15 +184,10 @@ namespace NoticeProject
         // 보이게 하게나 또는 숨김(기본적으로 숨김상태)
         protected void CommentHidden_Click(object sender, EventArgs e)
         {
-
             if (Comment_Panel.Visible)
-            {
                 Comment_Panel.Visible = false;
-            }
             else
-            {
                 Comment_Panel.Visible = true;
-            }
         }
 
 
@@ -234,26 +214,16 @@ namespace NoticeProject
                 // 이후, 행(Cells)의 위치를 가져오고, FindControl로 Label를 선택하여 텍스트를 가져온다.
 
                 string commentIndex = ((TextBox)gridrow.Cells[0].FindControl("HiddenIndex")).Text;
+                string sql = @"DELETE FROM dbo.Comment 
+                               WHERE [num] = @1";
+                List<object> param = new List<object>();
+                param.Add(commentIndex);
 
-                SqlConnection con = new SqlConnection(conSql);
-                string sql = "DELETE FROM Comment WHERE num=@Number";
-                SqlCommand cmd = new SqlCommand(sql, con);
-
-                cmd.Parameters.AddWithValue("@Number", commentIndex);
-
-                try
-                {
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-
-                    CommentGridView.DataBind(); // GridView 갱신(connection이 닫히기 전에 사용해야 한다.
-
-                    con.Close();
-                }
-                catch (Exception ex)
-                {
-                    Response.Write(ex);
-                }
+                MSConnection connection = new MSConnection();
+                connection.ExcuteQuery(sql, param);
+                connection.CloseDB();
+               
+                CommentGridView.DataBind(); // GridView 갱신(connection이 닫히기 전에 사용해야 한다.
             }
             else
             {
@@ -304,39 +274,28 @@ namespace NoticeProject
             }
         }
 
+
         // 수정한 댓글의 내용을 DB에 저장하는 버튼 
         protected void UpdateCommentBtn_Click(object sender, EventArgs e)
         {
-            SqlConnection con = new SqlConnection(conSql);
-            string sql = "UPDATE Comment SET comment=@Comment WHERE num = @Number_Comment";
-            SqlCommand cmd = new SqlCommand(sql, con);
+            Button btn = (Button)sender;
+            GridViewRow gridView = (GridViewRow)btn.NamingContainer;
 
-            try
-            {
-                Button btn = (Button)sender;
-                GridViewRow gridView = (GridViewRow)btn.NamingContainer;
-
-                con.Open();
-
-                // 댓글의 Index를 찾고, 수정된 내용의 댓글을 가져옴 
-                cmd.Parameters.AddWithValue("@Number_Comment", ((TextBox)gridView.Cells[0].FindControl("HiddenIndex")).Text);
-                cmd.Parameters.AddWithValue("@Comment", ((TextBox)gridView.Cells[0].FindControl("UpdateComment")).Text);
-                cmd.ExecuteNonQuery();
-
-                con.Close();
-
-                ((Label)gridView.Cells[0].FindControl("WrittenComment")).Text = ((TextBox)gridView.Cells[0].FindControl("UpdateComment")).Text;
-
-                CloseReComment(sender);
-            }
-            catch (Exception ex)
-            {
-                Response.Write(ex);
-            }
-
+            // 댓글의 Index를 찾고, 수정된 내용의 댓글을 가져옴 
+            string sql = @"UPDATE dbo.Comment SET 
+                                [comment] = @1
+                           WHERE
+                                [num] = @2";
+            List<object> param = new List<object>();
+            param.Add(((TextBox)gridView.Cells[0].FindControl("HiddenIndex")).Text);
+            param.Add(((TextBox)gridView.Cells[0].FindControl("UpdateComment")).Text);
+            
+            MSConnection connection = new MSConnection();
+            connection.ExcuteQuery(sql, param);
+            connection.CloseDB();
         }
 
-
+        // 
         protected void CancelUpdate_Click(object sender, EventArgs e)
         {
             CloseReComment(sender);
@@ -361,26 +320,23 @@ namespace NoticeProject
         // 파일 다운로드를 위한 버튼
         protected void DownLoadFile_ServerClick(object sender, EventArgs e)
         {
-            DataTable data_Tabel = new DataTable();
+            string sql = @"SELECT
+                                [header], 
+                                [user_id], 
+                                [input_info], 
+                                [fileName], 
+                                [fileType], 
+                                [imgsize] 
+                          FROM 
+                                dbo.Board 
+                          WHERE 
+                                number=@1";
 
-            SqlConnection con = new SqlConnection(conSql);
-            con.Open();
-
-            SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "SELECT header, user_id, input_info, fileName, fileType, imgsize FROM Board WHERE number=@Board";
-            cmd.Connection = con;
-            cmd.CommandType = CommandType.Text;
-            cmd.Parameters.AddWithValue("@Board", board_id);
-
-            SqlDataAdapter adapter = new SqlDataAdapter();
-            adapter.SelectCommand = cmd;
-            adapter.Fill(data_Tabel);
-
-            con.Close();
-
+            MSConnection connection = new MSConnection();
+            DataTable data_Tabel = connection.GetDataTable(sql, board_id);
+            connection.CloseDB();
 
             DataRow data = data_Tabel.Rows[0];
-
             string name = (string)data["fileName"];
             string contentType = (string)data["fileType"];
             Byte[] fileData = (Byte[])data["imgsize"];
@@ -391,22 +347,5 @@ namespace NoticeProject
             Response.Flush();
             Response.End();
         }
-
-
-        /*
-        // SQL에서 데이터를 받아오는 함수
-        public static DataTable DataReturnTable(string sqlCmd, int parameter)
-        {
-            
-
-            return dataTable;
-        }
-
-
-        private static SqlConnection GetConnectionString()
-        {
-            SqlConnection sqlCon = new SqlConnection(ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString);
-            return sqlCon;
-        }*/
     }
 }

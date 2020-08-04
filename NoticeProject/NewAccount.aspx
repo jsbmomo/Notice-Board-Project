@@ -120,7 +120,8 @@
         </table>
 
         <p>
-            <input ID="backToMain" value="메뉴 화면" OnClick="Default.aspx"/>
+            <input ID="backToMain" type="button" value="메뉴 화면" 
+                OnClick="location.href='Default.aspx'"/>
             <asp:Button ID="createAccount" runat="server" Text="계정 생성" 
                 ValidationGroup="vali" OnClick ="createAccount_Click" />
         </p>

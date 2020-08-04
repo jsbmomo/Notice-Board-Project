@@ -3,10 +3,6 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server" >
 
-    <script runat="server">
-        
-    </script>
-    
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
     <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
     <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
@@ -25,7 +21,70 @@
         });
     </script>
     
+    <script type="text/javascript">
+        function NoticeList() {
+            
+            $("#NoticeGridTable").jqGrid({
+                colModel: [
+                    { name: "number", label: "번호" },
+                    { name: "header", label: "제목" },
+                    { name: "user_id", label: "작성자" },
+                    { name: "input_date", label: "작성 날짜" },
+                    { label: "기타" }
+                ],
+                height: 'auto',
+                guiStyle: "bootstrap",
+                iconSet: "fontAwesome",
+                sortname: "invdate",
+                sortorder: "desc",
+                threeStateSort: true,
+                headertitles: true,
+                rownumbers: true,
+                toppager: true,
+                pager: true,
+                loadtext: "Data Loading...",
+                rowNum: 20,
+                inlineEditing: {keys: true, defaultFocusField: "number", focusField: "number"},
+
+                onSelectRow: function (rowid, status, e){
+                    $("#NoticeGridTable").jqGrid('getRowData', rodiw);
+                    var sItemID = $("#NoticeGridTable").getRowData(rowid).ID;
+                    LoadList(sItemID);
+                }
+            })
+        }
+
+        function LoadList(sItemID) {
+            var param = "{ number:'" + sItemID + "'}";
+            $("#NoticeGridTable").jqGrid('clearGridData');
+            var gridArrayData = [];
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                contentType: "applicatoin/json; charset=utf-8",
+                url: "NoticePage.aspx/LoadList",
+                data: param,
+                success: function (data) {
+                    var result = jQuery.parseJSON(data.d).Rows;
+
+                    for (var i = 0; i < result.length; i++) {
+                        var item = result[i];
+                        gridArrayData.push({
+                            number: item.number,
+                            header: item.header,
+                            user_id: item.user_id,
+                            input_date: item.input_date
+                        });
+                    }
+
+                    $("#NoticeGridTable").jqGrid('setGridParam', { data: gridArrayData });
+                    $("#NoticeGridTable").trigger('reloadGrid');
+                }
+            })
+        }
+    </script>
     
+
     <aside id="sidebar">
         <div id="profile">
             어서오세요! <br /><asp:Label ID="Login_UserID_lbl" runat="server" BorderColor="Blue" Text="" />님, 환영합니다.<br />
@@ -54,6 +113,11 @@
         <!--해당 GridView는 메인 화면에 표시될 게시판에 대한 설정이다.-->
         <!--DataNavigateUrlFields는 gridview 내에 있는 DataField의 값을 가져오고 -->
         <!--HyperLink에 DataNavigateUrlFormatString을 통해 해당 값을 넣어준다.-->
+        <article>
+            <table id="NoticeGridTable"></table>
+        </article>
+
+
         <article>
         <asp:GridView ID="NoticeGrid" runat="server" width="100%"
             DataSourceID="SqlDataSource"
@@ -133,6 +197,8 @@
             <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
         </asp:GridView>
         </article>
+        <!------------------------------------------------------------------------------>
+
 
         <!--메인 게시판에 게시물의 목록을 가져오는 JQuary-->
         <!--게시판 메인 화면 구성(mssql에서 게시판의 내용을 가져와 gridview로 보여줌)-->
